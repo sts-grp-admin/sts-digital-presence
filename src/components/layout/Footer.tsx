@@ -67,6 +67,9 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} Sabius Tech Solutions. {t(f.rights, lang)}</p>
           <Link to="/mentions-legales" className="hover:opacity-100 transition-opacity">{t(f.legalNotice, lang)}</Link>
         </div>
+        <p className="mt-4 text-center text-[10px] text-night-foreground/40">
+          SABIUS TECH SOLUTIONS — SARL au capital de 5 000 € — SIREN 918 031 675 — RCS Paris
+        </p>
       </div>
     </footer>
   );

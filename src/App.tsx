@@ -11,6 +11,7 @@ import Services from "./pages/Services";
 import References from "./pages/References";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import LegalNotice from "./pages/LegalNotice";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/references" element={<References />} />
               <Route path="/a-propos" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/mentions-legales" element={<LegalNotice />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
