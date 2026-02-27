@@ -64,8 +64,8 @@ const techCategories = [
   { label: "Langages", items: ["Java", "Python", "TypeScript", "C#"] },
   { label: "Front-end", items: ["React", "Angular", "Vue.js"] },
   { label: "Back-end", items: ["Spring Boot", "Node.js", ".NET"] },
+  { label: "Intelligence Artificielle & Data", items: ["Python", "TensorFlow", "PyTorch", "Scikit-learn", "LangChain", "OpenAI API", "HuggingFace", "Pandas", "Spark", "Power BI"] },
   { label: "Cloud", items: ["AWS", "Azure", "GCP"] },
-  { label: "Data", items: ["Kafka", "Spark", "Snowflake", "Power BI"] },
   { label: "DevOps", items: ["Docker", "Kubernetes", "GitLab CI", "Terraform"] },
 ];
 
