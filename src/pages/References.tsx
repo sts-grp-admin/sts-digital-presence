@@ -141,7 +141,7 @@ const ReferencesPage = () => {
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {clients.map((name, i) => (
               <AnimatedSection key={name} delay={i * 0.05}>
-                <div className="bg-card border border-border rounded-lg p-6 flex items-center justify-center h-24 hover:border-primary/40 transition-colors">
+                <div className="bg-card border border-border rounded-lg p-6 flex items-center justify-center h-24 hover:border-primary/40 hover:shadow-sm transition-all duration-300">
                   <span className="font-heading font-semibold text-foreground text-center text-sm md:text-base">
                     {name}
                   </span>
@@ -193,7 +193,7 @@ const ReferencesPage = () => {
           <div className="mt-12 grid md:grid-cols-2 gap-6">
             {missions.map((m, i) => (
               <AnimatedSection key={m.title} delay={i * 0.07}>
-                <div className="bg-card border border-border rounded-lg p-8 h-full flex flex-col">
+                <div className="bg-card border border-border rounded-lg p-8 h-full flex flex-col hover:border-primary/40 hover:shadow-md transition-all duration-300">
                   <Badge variant="secondary" className="w-fit mb-4 text-xs">
                     {m.sector}
                   </Badge>

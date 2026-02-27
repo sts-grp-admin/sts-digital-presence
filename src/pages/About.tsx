@@ -1,4 +1,5 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
+import AnimatedCounter from "@/components/shared/AnimatedCounter";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Award, Handshake, Settings, Zap } from "lucide-react";
@@ -182,9 +183,10 @@ const AboutPage = () => {
           <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((s, i) => (
               <AnimatedSection key={s.label} delay={i * 0.1} className="text-center">
-                <span className="text-4xl md:text-5xl font-extrabold text-primary">
-                  {s.value}
-                </span>
+                <AnimatedCounter
+                  value={s.value}
+                  className="text-4xl md:text-5xl font-extrabold text-primary"
+                />
                 <p className="mt-2 text-sm text-muted-foreground font-medium">
                   {s.label}
                 </p>

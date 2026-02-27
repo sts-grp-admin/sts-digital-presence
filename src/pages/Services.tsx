@@ -107,7 +107,7 @@ const ServicesPage = () => {
         <div className="container space-y-12">
           {services.map((s, i) => (
             <AnimatedSection key={s.title} delay={i * 0.05}>
-              <div className="bg-card border border-border rounded-lg p-8 md:p-10 flex flex-col md:flex-row gap-8">
+              <div className="bg-card border border-border rounded-lg p-8 md:p-10 flex flex-col md:flex-row gap-8 hover:border-primary/40 hover:shadow-md transition-all duration-300">
                 <div className="flex-shrink-0">
                   <div className="w-14 h-14 rounded-lg bg-accent flex items-center justify-center">
                     <s.icon className="h-7 w-7 text-primary" />
