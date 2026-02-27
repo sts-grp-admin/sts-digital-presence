@@ -50,13 +50,18 @@ const services = [
   {
     icon: BrainCircuit,
     title: "Data & Intelligence Artificielle",
-    desc: "Nous structurons vos données et mettons en œuvre des solutions concrètes : pipelines de données, tableaux de bord décisionnels et intégration de modèles IA.",
+    desc: "Nous concevons des solutions IA sur mesure qui transforment vos données en levier de performance. De la stratégie data à la mise en production, nous accompagnons vos équipes sur l'ensemble de la chaîne de valeur.",
     items: [
-      "Ingénierie de données et ETL",
-      "Data visualisation et BI",
-      "Machine Learning appliqué",
-      "Automatisation intelligente",
-      "Gouvernance des données",
+      "IA Générative & Agents intelligents",
+      "RAG & Knowledge Management",
+      "Data Engineering & Analytics",
+      "MLOps & industrialisation",
+    ],
+    subDetails: [
+      "Conception d'agents conversationnels, automatisation de processus métier, intégration de LLM (GPT, Claude, Mistral) dans vos outils internes.",
+      "Exploitation intelligente de vos bases documentaires grâce au Retrieval-Augmented Generation. Recherche sémantique, chatbots métier, Q&A sur vos données.",
+      "Pipelines de données, ETL, data lakes, dashboards décisionnels. De la donnée brute à l'indicateur métier.",
+      "Du prototype au modèle en production : déploiement, monitoring, fine-tuning, passage à l'échelle.",
     ],
   },
   {
@@ -120,17 +125,33 @@ const ServicesPage = () => {
                   <p className="mt-3 text-muted-foreground leading-relaxed">
                     {s.desc}
                   </p>
-                  <ul className="mt-5 flex flex-wrap gap-2">
-                    {s.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-center gap-2 text-sm text-foreground bg-accent/60 rounded-full px-3 py-1"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  {"subDetails" in s && s.subDetails ? (
+                    <ul className="mt-5 space-y-3">
+                      {s.items.map((item, j) => (
+                        <li key={item} className="flex gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-1.5" />
+                          <div>
+                            <span className="text-sm font-semibold text-foreground">{item}</span>
+                            <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                              {(s as any).subDetails[j]}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <ul className="mt-5 flex flex-wrap gap-2">
+                      {s.items.map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-center gap-2 text-sm text-foreground bg-accent/60 rounded-full px-3 py-1"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </AnimatedSection>
