@@ -525,4 +525,65 @@ export const translations = {
       es: "Nos pondremos en contacto con usted a la brevedad.",
     },
   },
+
+  // ─── Legal Notice ───
+  legal: {
+    title: { fr: "Mentions légales", en: "Legal Notice", es: "Aviso legal" },
+    editorTitle: { fr: "1. Éditeur du site", en: "1. Website Publisher", es: "1. Editor del sitio" },
+    editorType: {
+      fr: "SARL unipersonnelle au capital de 5 000 €",
+      en: "Single-member limited liability company (SARL) with a share capital of €5,000",
+      es: "SARL unipersonal con un capital de 5 000 €",
+    },
+    editorAddress: {
+      fr: "Siège social : 58 rue de Monceau, 75008 Paris, France",
+      en: "Registered office: 58 rue de Monceau, 75008 Paris, France",
+      es: "Sede social: 58 rue de Monceau, 75008 Paris, Francia",
+    },
+    editorAPE: {
+      fr: "Code APE : 6202A — Conseil en systèmes et logiciels informatiques",
+      en: "APE Code: 6202A — IT systems and software consulting",
+      es: "Código APE: 6202A — Consultoría en sistemas y software informático",
+    },
+    editorTVA: {
+      fr: "TVA intracommunautaire : FR33 918 031 675",
+      en: "EU VAT number: FR33 918 031 675",
+      es: "IVA intracomunitario: FR33 918 031 675",
+    },
+    editorDirector: {
+      fr: "Directeur de la publication : Tarik Aazizi, Gérant",
+      en: "Publication director: Tarik Aazizi, Managing Director",
+      es: "Director de la publicación: Tarik Aazizi, Gerente",
+    },
+    hostingTitle: { fr: "2. Hébergement", en: "2. Hosting", es: "2. Alojamiento" },
+    hostingText: {
+      fr: "Le site est hébergé par : Lovable (à compléter avec les informations exactes de l'hébergeur avant mise en production).",
+      en: "This website is hosted by: Lovable (to be completed with exact hosting details before going live).",
+      es: "El sitio está alojado por: Lovable (completar con la información exacta del alojamiento antes de la puesta en producción).",
+    },
+    ipTitle: { fr: "3. Propriété intellectuelle", en: "3. Intellectual Property", es: "3. Propiedad intelectual" },
+    ipText: {
+      fr: "L'ensemble du contenu du site (textes, images, logo, éléments graphiques) est la propriété exclusive de Sabius Tech Solutions, sauf mention contraire. Toute reproduction, même partielle, est interdite sans autorisation préalable.",
+      en: "All content on this website (text, images, logo, graphic elements) is the exclusive property of Sabius Tech Solutions, unless otherwise stated. Any reproduction, even partial, is prohibited without prior authorisation.",
+      es: "Todo el contenido del sitio (textos, imágenes, logotipo, elementos gráficos) es propiedad exclusiva de Sabius Tech Solutions, salvo mención contraria. Toda reproducción, incluso parcial, está prohibida sin autorización previa.",
+    },
+    dataTitle: { fr: "4. Données personnelles", en: "4. Personal Data", es: "4. Datos personales" },
+    dataText: {
+      fr: "Les données collectées via le formulaire de contact (nom, email, entreprise, téléphone, message) sont uniquement destinées à Sabius Tech Solutions pour répondre à vos demandes. Elles ne sont ni cédées ni vendues à des tiers. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition sur vos données. Pour exercer ces droits, contactez : contact@sabiustechsolutions.com",
+      en: "Data collected through the contact form (name, email, company, phone, message) is used solely by Sabius Tech Solutions to respond to your enquiries. It is neither transferred nor sold to third parties. In accordance with the GDPR, you have the right to access, rectify, delete and object to the processing of your data. To exercise these rights, contact: contact@sabiustechsolutions.com",
+      es: "Los datos recogidos a través del formulario de contacto (nombre, email, empresa, teléfono, mensaje) están destinados exclusivamente a Sabius Tech Solutions para responder a sus solicitudes. No se ceden ni se venden a terceros. Conforme al RGPD, usted dispone de un derecho de acceso, rectificación, supresión y oposición sobre sus datos. Para ejercer estos derechos, contacte: contact@sabiustechsolutions.com",
+    },
+    cookiesTitle: { fr: "5. Cookies", en: "5. Cookies", es: "5. Cookies" },
+    cookiesText: {
+      fr: "Ce site peut utiliser des cookies techniques nécessaires à son bon fonctionnement. Aucun cookie publicitaire ni de tracking n'est utilisé.",
+      en: "This website may use technical cookies necessary for its proper functioning. No advertising or tracking cookies are used.",
+      es: "Este sitio puede utilizar cookies técnicas necesarias para su correcto funcionamiento. No se utilizan cookies publicitarias ni de seguimiento.",
+    },
+    liabilityTitle: { fr: "6. Responsabilité", en: "6. Liability", es: "6. Responsabilidad" },
+    liabilityText: {
+      fr: "Sabius Tech Solutions s'efforce de maintenir les informations du site à jour mais ne saurait être tenue responsable d'éventuelles inexactitudes ou omissions.",
+      en: "Sabius Tech Solutions endeavours to keep the information on this website up to date but cannot be held liable for any inaccuracies or omissions.",
+      es: "Sabius Tech Solutions se esfuerza por mantener la información del sitio actualizada, pero no puede ser considerada responsable de posibles inexactitudes u omisiones.",
+    },
+  },
 } as const;
