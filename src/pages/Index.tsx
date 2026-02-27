@@ -53,6 +53,9 @@ const Index = () => {
         />
         <div className="container relative py-14 md:py-20 lg:py-24">
           <AnimatedSection className="max-w-3xl">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] mb-4" style={{ color: "#3AAFA9" }}>
+              Sabius Tech Solutions
+            </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-foreground text-balance">
               {t(h.heroTitle, lang)}
             </h1>
