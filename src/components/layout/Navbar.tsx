@@ -70,7 +70,7 @@ const Navbar = () => {
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
         <Link to="/" className="flex items-center">
-          <img src={logo} alt="Sabius Tech Solutions" className="h-10 md:h-12 w-auto" />
+          <img src={logo} alt="Sabius Tech Solutions" className="h-12 md:h-14 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
