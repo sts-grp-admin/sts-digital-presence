@@ -151,7 +151,7 @@ const Index = () => {
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {expertises.map((s, i) => (
               <AnimatedSection key={s.title} delay={i * 0.08}>
-                <div className="group bg-card border border-border rounded-lg p-6 h-full hover:border-primary/40 transition-colors">
+                <div className="group bg-card border border-border rounded-lg p-6 h-full hover:border-primary/40 hover:shadow-md transition-all duration-300">
                   <s.icon className="h-8 w-8 text-primary mb-4" />
                   <h3 className="font-heading font-bold text-lg text-foreground">
                     {s.title}
@@ -242,7 +242,7 @@ const Index = () => {
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {missions.map((m, i) => (
               <AnimatedSection key={m.title} delay={i * 0.1}>
-                <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col">
+                <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col hover:border-primary/40 hover:shadow-md transition-all duration-300">
                   <Badge variant="secondary" className="w-fit mb-4 text-xs">
                     Secteur {m.sector}
                   </Badge>
