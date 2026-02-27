@@ -51,7 +51,7 @@ const Index = () => {
             backgroundSize: "60px 60px",
           }}
         />
-        <div className="container relative py-24 md:py-36 lg:py-44">
+        <div className="container relative py-14 md:py-20 lg:py-24">
           <AnimatedSection className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-foreground text-balance">
               {t(h.heroTitle, lang)}
@@ -72,7 +72,7 @@ const Index = () => {
       </section>
 
       {/* Nos domaines d'expertise */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
@@ -114,7 +114,7 @@ const Index = () => {
       </section>
 
       {/* Pourquoi Sabius */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
+      <section className="py-14 md:py-20" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -142,7 +142,7 @@ const Index = () => {
       </section>
 
       {/* Ils nous font confiance */}
-      <section className="bg-card py-20 md:py-28">
+      <section className="bg-card py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -169,7 +169,7 @@ const Index = () => {
       </section>
 
       {/* Missions représentatives */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -211,7 +211,7 @@ const Index = () => {
       </section>
 
       {/* CTA final */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#2B7A78" }}>
+      <section className="py-14 md:py-20" style={{ backgroundColor: "#2B7A78" }}>
         <div className="container">
           <AnimatedSection className="text-center max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-white">

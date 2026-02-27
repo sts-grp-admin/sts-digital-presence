@@ -45,7 +45,7 @@ const ReferencesPage = () => {
   return (
     <>
       {/* En-tête */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
+      <section className="py-12 md:py-16" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection className="max-w-2xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
@@ -59,7 +59,7 @@ const ReferencesPage = () => {
       </section>
 
       {/* Nos clients */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -82,7 +82,7 @@ const ReferencesPage = () => {
       </section>
 
       {/* Environnements de mission */}
-      <section className="bg-card py-20 md:py-28">
+      <section className="bg-card py-14 md:py-20">
         <div className="container">
           <AnimatedSection className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
@@ -108,7 +108,7 @@ const ReferencesPage = () => {
       </section>
 
       {/* Nos modes d'intervention */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <AnimatedSection className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
@@ -141,7 +141,7 @@ const ReferencesPage = () => {
       </section>
 
       {/* Environnements techniques */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
+      <section className="py-14 md:py-20" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -171,7 +171,7 @@ const ReferencesPage = () => {
       </section>
 
       {/* Secteurs d'intervention */}
-      <section className="bg-card py-20 md:py-28">
+      <section className="bg-card py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -194,7 +194,7 @@ const ReferencesPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#2B7A78" }}>
+      <section className="py-14 md:py-20" style={{ backgroundColor: "#2B7A78" }}>
         <div className="container text-center">
           <AnimatedSection>
             <h2 className="text-2xl md:text-3xl font-bold text-white">
