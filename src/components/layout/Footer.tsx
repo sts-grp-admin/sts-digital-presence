@@ -40,7 +40,7 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-semibold text-primary-foreground mb-4">Contact</h4>
             <ul className="space-y-2 text-sm opacity-70">
-              <li>contact@sabius-tech.com</li>
+              <li>contact@sabiustechsolutions.com</li>
               <li>+33 (0)1 XX XX XX XX</li>
               <li>Paris, France</li>
             </ul>
