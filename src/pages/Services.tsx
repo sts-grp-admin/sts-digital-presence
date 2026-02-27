@@ -13,6 +13,7 @@ import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
 
 const serviceIcons = [Lightbulb, Code2, BrainCircuit, Building2, Plug, UsersRound];
+const serviceIds = ["conseil-it", "developpement", "data-ia", "architecture", "integration", "accompagnement"];
 
 const ServicesPage = () => {
   const { lang } = useLanguage();
@@ -41,7 +42,7 @@ const ServicesPage = () => {
             const Icon = serviceIcons[i];
             return (
               <AnimatedSection key={i} delay={i * 0.05}>
-                <div className="bg-card border border-border rounded-lg p-8 md:p-10 flex flex-col md:flex-row gap-8 hover:border-primary/40 hover:shadow-md transition-all duration-300">
+                <div id={serviceIds[i]} className="bg-card border border-border rounded-lg p-8 md:p-10 flex flex-col md:flex-row gap-8 hover:border-primary/40 hover:shadow-md transition-all duration-300 scroll-mt-24">
                   <div className="flex-shrink-0">
                     <div className="w-14 h-14 rounded-lg bg-accent flex items-center justify-center">
                       <Icon className="h-7 w-7 text-primary" />

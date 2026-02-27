@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/sabius_logo.png";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
@@ -6,12 +6,22 @@ import { translations } from "@/i18n/translations";
 const Footer = () => {
   const { lang } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const f = translations.footer;
   const n = translations.nav;
 
-  const goToServices = () => {
-    navigate("/services");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const goToAnchor = (path: string, hash?: string) => {
+    if (location.pathname === path && hash) {
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
+    navigate(path + (hash ? `#${hash}` : ""));
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -36,10 +46,10 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-semibold text-primary-foreground mb-4">{t(f.servicesTitle, lang)}</h4>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.consultingIT, lang)}</button></li>
-              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.development, lang)}</button></li>
-              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.technicalExpertise, lang)}</button></li>
-              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.support, lang)}</button></li>
+              <li><button onClick={() => goToAnchor("/services", "conseil-it")} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.consultingIT, lang)}</button></li>
+              <li><button onClick={() => goToAnchor("/services", "developpement")} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.development, lang)}</button></li>
+              <li><button onClick={() => goToAnchor("/services", "architecture")} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.technicalExpertise, lang)}</button></li>
+              <li><button onClick={() => goToAnchor("/services", "accompagnement")} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.support, lang)}</button></li>
             </ul>
           </div>
 
