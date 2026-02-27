@@ -4,19 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/sabius_logo.png";
+import { useLanguage, t } from "@/i18n/LanguageContext";
+import { translations, Language } from "@/i18n/translations";
 
-const navLinks = [
-  { label: "Accueil", to: "/" },
-  { label: "Services", to: "/services" },
-  { label: "Références", to: "/references" },
-  { label: "À propos", to: "/a-propos" },
-  { label: "Contact", to: "/contact" },
+const languages: { code: Language; label: string }[] = [
+  { code: "fr", label: "FR" },
+  { code: "en", label: "EN" },
+  { code: "es", label: "ES" },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { lang, setLang } = useLanguage();
+
+  const navLinks = [
+    { label: t(translations.nav.home, lang), to: "/" },
+    { label: t(translations.nav.services, lang), to: "/services" },
+    { label: t(translations.nav.references, lang), to: "/references" },
+    { label: t(translations.nav.about, lang), to: "/a-propos" },
+    { label: t(translations.nav.contact, lang), to: "/contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -28,11 +37,30 @@ const Navbar = () => {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+
+  const LangSelector = ({ className = "" }: { className?: string }) => (
+    <div className={`flex items-center gap-1 ${className}`}>
+      {languages.map((l, i) => (
+        <span key={l.code} className="flex items-center">
+          <button
+            onClick={() => setLang(l.code)}
+            className={`text-sm font-medium min-h-[44px] min-w-[32px] transition-colors ${
+              lang === l.code ? "text-primary" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {l.label}
+          </button>
+          {i < languages.length - 1 && (
+            <span className="text-border text-xs mx-0.5">|</span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
 
   return (
     <header
@@ -59,9 +87,10 @@ const Navbar = () => {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-4">
+          <LangSelector />
           <Button asChild size="default">
-            <Link to="/contact">Nous contacter</Link>
+            <Link to="/contact">{t(translations.nav.cta, lang)}</Link>
           </Button>
         </div>
 
@@ -106,10 +135,18 @@ const Navbar = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="pt-2"
+              >
+                <LangSelector className="justify-center" />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
               >
                 <Button asChild className="w-full mt-4 min-h-[44px]">
-                  <Link to="/contact">Nous contacter</Link>
+                  <Link to="/contact">{t(translations.nav.cta, lang)}</Link>
                 </Button>
               </motion.div>
             </div>

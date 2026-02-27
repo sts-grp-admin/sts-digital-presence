@@ -3,56 +3,16 @@ import AnimatedCounter from "@/components/shared/AnimatedCounter";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Award, Handshake, Settings, Zap } from "lucide-react";
+import { useLanguage, t } from "@/i18n/LanguageContext";
+import { translations } from "@/i18n/translations";
 
-const values = [
-  {
-    icon: Award,
-    title: "Excellence technique",
-    text: "Chaque ligne de code, chaque recommandation reflète notre exigence de qualité et de rigueur.",
-  },
-  {
-    icon: Handshake,
-    title: "Engagement client",
-    text: "Nous nous impliquons dans la réussite de chaque mission comme si c'était la nôtre.",
-  },
-  {
-    icon: Settings,
-    title: "Pragmatisme",
-    text: "Nous privilégions les solutions qui fonctionnent. L'efficacité prime sur les effets de mode.",
-  },
-  {
-    icon: Zap,
-    title: "Réactivité",
-    text: "Disponibilité, écoute et adaptation rapide : nous répondons à vos besoins sans inertie.",
-  },
-];
-
-const steps = [
-  {
-    number: "01",
-    title: "Comprendre",
-    text: "Analyse de votre contexte, vos contraintes et vos objectifs avant toute intervention.",
-  },
-  {
-    number: "02",
-    title: "Concevoir",
-    text: "Proposition de solutions adaptées, réalistes et alignées avec votre stratégie technique.",
-  },
-  {
-    number: "03",
-    title: "Délivrer",
-    text: "Exécution avec rigueur et transparence, en maintenant un dialogue permanent avec vos équipes.",
-  },
-];
-
-const stats = [
-  { value: "30+", label: "missions réalisées" },
-  { value: "8+", label: "secteurs d'intervention" },
-  { value: "10+", label: "clients actifs et fidèles" },
-  { value: "100%", label: "engagement qualité" },
-];
+const valueIcons = [Award, Handshake, Settings, Zap];
+const statValues = ["30+", "8+", "10+", "100%"];
 
 const AboutPage = () => {
+  const { lang } = useLanguage();
+  const a = translations.about;
+
   return (
     <>
       {/* En-tête */}
@@ -60,10 +20,10 @@ const AboutPage = () => {
         <div className="container">
           <AnimatedSection className="max-w-2xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              À propos
+              {t(a.pageTitle, lang)}
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              L'expertise technique au service de vos enjeux.
+              {t(a.pageSubtitle, lang)}
             </p>
           </AnimatedSection>
         </div>
@@ -75,18 +35,12 @@ const AboutPage = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <AnimatedSection>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                Qui sommes-nous
+                {t(a.whoTitle, lang)}
               </h2>
               <div className="mt-6 space-y-4 text-muted-foreground leading-relaxed">
-                <p>
-                  Sabius Tech Solutions est une ESN spécialisée dans le conseil, le développement et l'accompagnement technique des entreprises.
-                </p>
-                <p>
-                  Nous intervenons auprès de PME, d'ETI et de grands comptes sur des missions à forte valeur ajoutée : stratégie SI, développement sur mesure, architecture, data et pilotage de projets complexes.
-                </p>
-                <p>
-                  Notre conviction : chaque entreprise mérite un partenaire technique capable de comprendre ses enjeux métier autant que ses défis technologiques. C'est cette exigence qui guide l'ensemble de nos interventions.
-                </p>
+                <p>{t(a.whoP1, lang)}</p>
+                <p>{t(a.whoP2, lang)}</p>
+                <p>{t(a.whoP3, lang)}</p>
               </div>
             </AnimatedSection>
 
@@ -120,24 +74,27 @@ const AboutPage = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Nos valeurs
+              {t(a.valuesTitle, lang)}
             </h2>
           </AnimatedSection>
 
           <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((v, i) => (
-              <AnimatedSection key={v.title} delay={i * 0.1} className="text-center">
-                <div className="w-14 h-14 rounded-lg bg-accent flex items-center justify-center mx-auto mb-4">
-                  <v.icon className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="font-heading font-bold text-lg text-foreground">
-                  {v.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {v.text}
-                </p>
-              </AnimatedSection>
-            ))}
+            {a.values.map((v, i) => {
+              const Icon = valueIcons[i];
+              return (
+                <AnimatedSection key={i} delay={i * 0.1} className="text-center">
+                  <div className="w-14 h-14 rounded-lg bg-accent flex items-center justify-center mx-auto mb-4">
+                    <Icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="font-heading font-bold text-lg text-foreground">
+                    {t(v.title, lang)}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {t(v.text, lang)}
+                  </p>
+                </AnimatedSection>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -147,23 +104,23 @@ const AboutPage = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Notre approche
+              {t(a.approachTitle, lang)}
             </h2>
           </AnimatedSection>
 
           <div className="mt-14 grid md:grid-cols-3 gap-8 relative">
             <div className="hidden md:block absolute top-[52px] left-[16.6%] right-[16.6%] h-0.5 bg-border" />
 
-            {steps.map((step, i) => (
-              <AnimatedSection key={step.title} delay={i * 0.15} className="text-center relative">
+            {a.steps.map((step, i) => (
+              <AnimatedSection key={i} delay={i * 0.15} className="text-center relative">
                 <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-5 text-sm font-bold relative z-10">
-                  {step.number}
+                  {String(i + 1).padStart(2, "0")}
                 </div>
                 <h3 className="font-heading font-bold text-lg text-foreground">
-                  {step.title}
+                  {t(step.title, lang)}
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                  {step.text}
+                  {t(step.text, lang)}
                 </p>
               </AnimatedSection>
             ))}
@@ -176,19 +133,19 @@ const AboutPage = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Quelques chiffres
+              {t(a.statsTitle, lang)}
             </h2>
           </AnimatedSection>
 
           <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((s, i) => (
-              <AnimatedSection key={s.label} delay={i * 0.1} className="text-center">
+            {a.stats.map((s, i) => (
+              <AnimatedSection key={i} delay={i * 0.1} className="text-center">
                 <AnimatedCounter
-                  value={s.value}
+                  value={statValues[i]}
                   className="text-4xl md:text-5xl font-extrabold text-primary"
                 />
                 <p className="mt-2 text-sm text-muted-foreground font-medium">
-                  {s.label}
+                  {t(s.label, lang)}
                 </p>
               </AnimatedSection>
             ))}
@@ -201,18 +158,14 @@ const AboutPage = () => {
         <div className="container text-center">
           <AnimatedSection>
             <h2 className="text-2xl md:text-3xl font-bold text-white">
-              Un projet ? Une mission ? Parlons-en.
+              {t(a.ctaTitle, lang)}
             </h2>
             <p className="mt-4 text-white/80">
-              Nous répondons sous 24h pour étudier votre besoin.
+              {t(a.ctaSubtitle, lang)}
             </p>
             <div className="mt-8">
-              <Button
-                asChild
-                size="lg"
-                className="bg-white text-foreground hover:bg-white/90 text-base"
-              >
-                <Link to="/contact">Nous contacter</Link>
+              <Button asChild size="lg" className="bg-white text-foreground hover:bg-white/90 text-base">
+                <Link to="/contact">{t(a.ctaBtn, lang)}</Link>
               </Button>
             </div>
           </AnimatedSection>
