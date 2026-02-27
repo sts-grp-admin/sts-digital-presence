@@ -65,26 +65,26 @@ const Index = () => {
             xmlns="http://www.w3.org/2000/svg"
           >
             {/* Angular shapes inspired by STS logo */}
-            <rect x="180" y="80" width="200" height="200" stroke="#3AAFA9" strokeWidth="1" opacity="0.12" transform="rotate(15 280 180)" />
-            <rect x="260" y="160" width="160" height="160" stroke="#3AAFA9" strokeWidth="1" opacity="0.1" transform="rotate(-10 340 240)" />
-            <rect x="140" y="300" width="120" height="120" stroke="#3AAFA9" strokeWidth="0.8" opacity="0.08" transform="rotate(25 200 360)" />
-            <line x1="100" y1="150" x2="400" y2="100" stroke="#3AAFA9" strokeWidth="0.8" opacity="0.1" />
-            <line x1="200" y1="350" x2="500" y2="250" stroke="#3AAFA9" strokeWidth="0.8" opacity="0.08" />
-            <line x1="300" y1="450" x2="550" y2="380" stroke="#3AAFA9" strokeWidth="0.6" opacity="0.06" />
-            <polygon points="420,120 480,200 360,200" stroke="#3AAFA9" strokeWidth="0.8" fill="none" opacity="0.1" />
-            <polygon points="350,380 430,440 270,440" stroke="#3AAFA9" strokeWidth="0.8" fill="none" opacity="0.08" />
+            <rect x="180" y="80" width="200" height="200" stroke="#3AAFA9" strokeWidth="1.2" opacity="0.25" transform="rotate(15 280 180)" />
+            <rect x="260" y="160" width="160" height="160" stroke="#3AAFA9" strokeWidth="1.2" opacity="0.22" transform="rotate(-10 340 240)" />
+            <rect x="140" y="300" width="120" height="120" stroke="#3AAFA9" strokeWidth="1" opacity="0.18" transform="rotate(25 200 360)" />
+            <line x1="100" y1="150" x2="400" y2="100" stroke="#3AAFA9" strokeWidth="1" opacity="0.2" />
+            <line x1="200" y1="350" x2="500" y2="250" stroke="#3AAFA9" strokeWidth="1" opacity="0.18" />
+            <line x1="300" y1="450" x2="550" y2="380" stroke="#3AAFA9" strokeWidth="0.8" opacity="0.15" />
+            <polygon points="420,120 480,200 360,200" stroke="#3AAFA9" strokeWidth="1" fill="none" opacity="0.22" />
+            <polygon points="350,380 430,440 270,440" stroke="#3AAFA9" strokeWidth="1" fill="none" opacity="0.18" />
             {/* Dots */}
-            <circle cx="450" cy="150" r="3" fill="#3AAFA9" opacity="0.12" />
-            <circle cx="200" cy="250" r="2.5" fill="#3AAFA9" opacity="0.1" />
-            <circle cx="380" cy="350" r="2" fill="#3AAFA9" opacity="0.08" />
-            <circle cx="500" cy="300" r="3.5" fill="#3AAFA9" opacity="0.1" />
+            <circle cx="450" cy="150" r="3" fill="#3AAFA9" opacity="0.25" />
+            <circle cx="200" cy="250" r="2.5" fill="#3AAFA9" opacity="0.22" />
+            <circle cx="380" cy="350" r="2" fill="#3AAFA9" opacity="0.2" />
+            <circle cx="500" cy="300" r="3.5" fill="#3AAFA9" opacity="0.22" />
           </svg>
         </div>
 
         <div className="container relative py-14 md:py-20 lg:py-24">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <AnimatedSection className="max-w-xl">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-foreground text-balance">
+            <AnimatedSection className="max-w-2xl">
+              <h1 className="text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-tight tracking-tight text-foreground text-balance">
                 {t(h.heroTitle, lang)}
               </h1>
               <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
