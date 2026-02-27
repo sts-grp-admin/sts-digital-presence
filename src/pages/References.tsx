@@ -62,12 +62,10 @@ const approachBlocks = [
 
 /* ── Environnements techniques ── */
 const techCategories = [
-  { label: "Langages", items: ["Java", "Python", "TypeScript", "C#"] },
-  { label: "Front-end", items: ["React", "Angular", "Vue.js"] },
-  { label: "Back-end", items: ["Spring Boot", "Node.js", ".NET"] },
-  { label: "Cloud", items: ["AWS", "Azure", "GCP"] },
-  { label: "Data", items: ["Kafka", "Spark", "Snowflake", "Power BI"] },
-  { label: "DevOps", items: ["Docker", "Kubernetes", "GitLab CI", "Terraform"] },
+  { label: "Développement & Architecture", items: ["Java", "Spring Boot", ".NET", "C#", "Angular", "React", "Node.js", "TypeScript", "Python", "API REST", "Microservices"] },
+  { label: "Intelligence Artificielle & Data", items: ["Python", "TensorFlow", "PyTorch", "Scikit-learn", "LangChain", "LlamaIndex", "OpenAI API", "HuggingFace Transformers", "Pandas", "Spark", "MLflow", "Power BI", "ChromaDB", "Pinecone"] },
+  { label: "Cloud & DevOps", items: ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform", "Jenkins", "GitLab CI/CD", "Ansible"] },
+  { label: "Conseil & Pilotage", items: ["Agile Scrum", "SAFe", "Kanban", "AMOA", "Cadrage SI", "Architecture d'entreprise"] },
 ];
 
 /* ── Secteurs d'intervention ── */
