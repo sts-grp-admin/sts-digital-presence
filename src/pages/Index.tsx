@@ -46,7 +46,7 @@ const Index = () => {
               L'expertise IT au service de vos ambitions
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-              Conseil, développement, data et intelligence artificielle : un accompagnement technique sur mesure pour les entreprises qui exigent l'excellence.
+              Conseil, développement et accompagnement technique sur mesure pour les entreprises qui exigent l'excellence.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Button asChild size="lg" className="text-base">
@@ -60,15 +60,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Expertise keywords banner */}
-      <section className="bg-muted py-6">
-        <div className="container">
-          <p className="text-center text-sm md:text-base text-muted-foreground tracking-wide">
-            IA &amp; GenAI · Data Science · Cloud · Développement · Architecture · DevOps
-          </p>
-        </div>
-      </section>
-
+      
       {/* Services overview */}
       <section className="bg-background py-20 md:py-28">
         <div className="container">
