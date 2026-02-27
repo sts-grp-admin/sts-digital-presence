@@ -12,7 +12,7 @@ const values = [
   {
     icon: Handshake,
     title: "Proximité client",
-    desc: "Structure à taille humaine, nous entretenons une relation directe et transparente avec chacun de nos clients. Pas d'intermédiaire, pas de distance.",
+    desc: "Nous entretenons une relation directe et transparente avec chacun de nos clients. Pas d'intermédiaire, pas de distance.",
   },
   {
     icon: Zap,
@@ -29,10 +29,10 @@ const AboutPage = () => {
           <AnimatedSection className="max-w-2xl">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">À propos</p>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              Une équipe d'experts engagés
+              L'expertise au cœur de chaque mission
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Sabius Tech Solutions est une société de services IT fondée par des passionnés de technologie. Notre mission : apporter un haut niveau d'expertise technique aux entreprises qui en ont besoin, avec la souplesse et la réactivité d'une structure à taille humaine.
+              Sabius Tech Solutions est une ESN spécialisée en conseil, développement et expertise technique. Notre mission : délivrer un haut niveau de qualité sur chaque intervention, avec réactivité et engagement.
             </p>
           </AnimatedSection>
         </div>
@@ -41,16 +41,16 @@ const AboutPage = () => {
       <section className="bg-background py-16 md:py-24">
         <div className="container">
           <AnimatedSection>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Notre histoire</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Notre approche</h2>
             <div className="max-w-3xl space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Créée par des ingénieurs issus de grands cabinets de conseil et d'ESN, STS est née d'une conviction simple : les entreprises méritent un accompagnement technique de qualité, sans les lourdeurs des grandes structures.
+                Sabius Tech Solutions intervient auprès d'entreprises de tous secteurs sur des missions à forte valeur ajoutée : conseil en architecture, développement d'applications critiques, audits techniques et renfort d'équipe.
               </p>
               <p>
-                Avec une équipe resserrée d'environ 5 consultants seniors, nous intervenons auprès de PME, ETI et grands comptes sur des missions à forte valeur ajoutée : conseil en architecture, développement d'applications critiques, audits techniques et renfort d'équipe.
+                Ce qui nous distingue, c'est notre exigence de qualité à chaque étape. Nous mobilisons des consultants expérimentés, capables de s'intégrer rapidement et de produire des résultats concrets.
               </p>
               <p>
-                Notre force ? La combinaison d'une expertise pointue, d'une vraie proximité avec nos clients, et d'un engagement total sur chaque mission.
+                Notre force : une expertise pointue, un engagement total sur chaque mission, et une capacité de livraison éprouvée.
               </p>
             </div>
           </AnimatedSection>

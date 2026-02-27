@@ -95,10 +95,10 @@ const Index = () => {
         <div className="container">
           <AnimatedSection className="text-center max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-              Une structure à taille humaine, un impact à grande échelle
+              Des résultats concrets, un engagement total
             </h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              PME, ETI ou grands comptes : nous nous adaptons à votre contexte pour délivrer des résultats concrets, avec la réactivité et la proximité d'une équipe engagée.
+              Quel que soit votre contexte, nous nous adaptons pour délivrer des résultats mesurables, avec la réactivité et la rigueur que vos projets exigent.
             </p>
             <div className="mt-8">
               <Button asChild variant="default">
