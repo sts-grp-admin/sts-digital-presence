@@ -44,7 +44,7 @@ const Index = () => {
       {/* Hero */}
       <section
         className="relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #F0FAFA 60%, #F7F9FA 100%)" }}
+        style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F0FAFA 40%, #F0FAFA 70%, hsl(var(--background)) 100%)" }}
       >
         {/* Subtle grid */}
         <div
