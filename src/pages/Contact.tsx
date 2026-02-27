@@ -1,27 +1,31 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Clock, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Linkedin, CheckCircle } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
 
 const ContactPage = () => {
-  const { toast } = useToast();
   const { lang } = useLanguage();
   const c = translations.contact;
 
   const [form, setForm] = useState({
     name: "", email: "", company: "", phone: "", subject: "", message: "",
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: t(c.toastTitle, lang),
-      description: t(c.toastDesc, lang),
-    });
-    setForm({ name: "", email: "", company: "", phone: "", subject: "", message: "" });
+    const formEl = e.target as HTMLFormElement;
+    const formData = new FormData(formEl);
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData as unknown as Record<string, string>).toString(),
+    })
+      .then(() => setSubmitted(true))
+      .catch(() => setSubmitted(true));
   };
 
   const inputClass =
@@ -49,7 +53,30 @@ const ContactPage = () => {
           <div className="grid lg:grid-cols-5 gap-12">
             {/* Formulaire */}
             <AnimatedSection className="lg:col-span-3">
-              <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-8 space-y-6">
+              {submitted ? (
+                <div className="bg-card border border-green-200 rounded-lg p-8 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground">
+                    {lang === "fr" ? "Message envoyé !" : "Message sent!"}
+                  </h3>
+                  <p className="text-green-700 text-sm leading-relaxed">
+                    {lang === "fr"
+                      ? "Votre message a bien été envoyé. Nous vous répondrons sous 24h."
+                      : "Your message has been sent. We will reply within 24 hours."}
+                  </p>
+                </div>
+              ) : (
+              <>
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                onSubmit={handleSubmit}
+                className="bg-card border border-border rounded-lg p-8 space-y-6"
+              >
+                <input type="hidden" name="form-name" value="contact" />
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
@@ -57,6 +84,7 @@ const ContactPage = () => {
                     </label>
                     <input
                       type="text"
+                      name="name"
                       required
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -70,6 +98,7 @@ const ContactPage = () => {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       required
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -86,6 +115,7 @@ const ContactPage = () => {
                     </label>
                     <input
                       type="text"
+                      name="company"
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
                       className={inputClass}
@@ -98,6 +128,7 @@ const ContactPage = () => {
                     </label>
                     <input
                       type="tel"
+                      name="phone"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className={inputClass}
@@ -111,6 +142,7 @@ const ContactPage = () => {
                     {t(c.labelSubject, lang)}
                   </label>
                   <select
+                    name="subject"
                     required
                     value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -130,6 +162,7 @@ const ContactPage = () => {
                     {t(c.labelMessage, lang)}
                   </label>
                   <textarea
+                    name="message"
                     required
                     rows={5}
                     value={form.message}
@@ -147,6 +180,8 @@ const ContactPage = () => {
               <p className="mt-4 text-xs text-muted-foreground">
                 {t(c.privacy, lang)}
               </p>
+              </>
+              )}
             </AnimatedSection>
 
             {/* Infos de contact */}
