@@ -16,7 +16,7 @@ const AboutPage = () => {
   return (
     <>
       {/* En-tête */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
+      <section className="py-12 md:py-16" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection className="max-w-2xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
@@ -30,7 +30,7 @@ const AboutPage = () => {
       </section>
 
       {/* Qui sommes-nous */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <AnimatedSection>
@@ -70,7 +70,7 @@ const AboutPage = () => {
       </section>
 
       {/* Nos valeurs */}
-      <section className="bg-card py-20 md:py-28">
+      <section className="bg-card py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -100,7 +100,7 @@ const AboutPage = () => {
       </section>
 
       {/* Notre approche */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -129,7 +129,7 @@ const AboutPage = () => {
       </section>
 
       {/* Quelques chiffres */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
+      <section className="py-14 md:py-20" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
@@ -154,7 +154,7 @@ const AboutPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#2B7A78" }}>
+      <section className="py-14 md:py-20" style={{ backgroundColor: "#2B7A78" }}>
         <div className="container text-center">
           <AnimatedSection>
             <h2 className="text-2xl md:text-3xl font-bold text-white">

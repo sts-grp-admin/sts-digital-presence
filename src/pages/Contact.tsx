@@ -30,7 +30,7 @@ const ContactPage = () => {
   return (
     <>
       {/* En-tête */}
-      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
+      <section className="py-12 md:py-16" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection className="max-w-2xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
@@ -44,7 +44,7 @@ const ContactPage = () => {
       </section>
 
       {/* Formulaire + infos */}
-      <section className="bg-background py-16 md:py-24">
+      <section className="bg-background py-14 md:py-20">
         <div className="container">
           <div className="grid lg:grid-cols-5 gap-12">
             {/* Formulaire */}
