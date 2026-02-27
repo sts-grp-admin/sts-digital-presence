@@ -1,97 +1,163 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Linkedin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const ContactPage = () => {
   const { toast } = useToast();
-  const [form, setForm] = useState({ name: "", email: "", company: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    company: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: "Message envoyé", description: "Nous reviendrons vers vous dans les meilleurs délais." });
-    setForm({ name: "", email: "", company: "", message: "" });
+    toast({
+      title: "Message envoyé",
+      description: "Nous reviendrons vers vous dans les meilleurs délais.",
+    });
+    setForm({ name: "", email: "", company: "", phone: "", subject: "", message: "" });
   };
+
+  const inputClass =
+    "w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
   return (
     <>
-      <section className="bg-card py-20 md:py-28">
+      {/* En-tête */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection className="max-w-2xl">
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Contact</p>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              Parlons de votre projet
+              Contactez-nous
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Un besoin technique ? Une question ? N'hésitez pas à nous contacter, nous vous répondrons rapidement.
+              Un projet, une mission, une question ? Nous vous répondons sous 24 heures.
             </p>
           </AnimatedSection>
         </div>
       </section>
 
+      {/* Formulaire + infos */}
       <section className="bg-background py-16 md:py-24">
         <div className="container">
           <div className="grid lg:grid-cols-5 gap-12">
-            {/* Form */}
+            {/* Formulaire */}
             <AnimatedSection className="lg:col-span-3">
               <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-8 space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Nom complet</label>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Nom complet
+                    </label>
                     <input
                       type="text"
                       required
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className={inputClass}
                       placeholder="Jean Dupont"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Email professionnel
+                    </label>
                     <input
                       type="email"
                       required
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className={inputClass}
                       placeholder="jean@entreprise.fr"
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Entreprise</label>
-                  <input
-                    type="text"
-                    value={form.company}
-                    onChange={(e) => setForm({ ...form, company: e.target.value })}
-                    className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="Nom de votre entreprise"
-                  />
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Entreprise
+                    </label>
+                    <input
+                      type="text"
+                      value={form.company}
+                      onChange={(e) => setForm({ ...form, company: e.target.value })}
+                      className={inputClass}
+                      placeholder="Nom de votre entreprise"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Téléphone <span className="text-muted-foreground font-normal">(optionnel)</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      className={inputClass}
+                      placeholder="+33 6 12 34 56 78"
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Sujet
+                  </label>
+                  <select
+                    required
+                    value={form.subject}
+                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    className={inputClass}
+                  >
+                    <option value="" disabled>
+                      Sélectionnez un sujet
+                    </option>
+                    <option value="projet">Nouveau projet</option>
+                    <option value="regie">Mission / Régie</option>
+                    <option value="conseil">Conseil</option>
+                    <option value="partenariat">Partenariat</option>
+                    <option value="autre">Autre</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Message
+                  </label>
                   <textarea
                     required
                     rows={5}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                    className={`${inputClass} resize-none`}
                     placeholder="Décrivez votre projet ou votre besoin..."
                   />
                 </div>
+
                 <Button type="submit" size="lg" className="w-full sm:w-auto">
-                  Envoyer le message
+                  Envoyer votre message
                 </Button>
               </form>
+
+              <p className="mt-4 text-xs text-muted-foreground">
+                Vos données sont traitées de manière confidentielle. Nous ne partageons jamais vos informations avec des tiers.
+              </p>
             </AnimatedSection>
 
-            {/* Contact info */}
+            {/* Infos de contact */}
             <AnimatedSection className="lg:col-span-2" delay={0.15}>
-              <div className="space-y-8">
+              <div className="rounded-lg p-8 space-y-8" style={{ backgroundColor: "#F7F9FA" }}>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-foreground mb-6">Coordonnées</h3>
+                  <h3 className="font-heading font-bold text-lg text-foreground mb-6">
+                    Coordonnées
+                  </h3>
                   <div className="space-y-5">
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
@@ -99,7 +165,12 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">Email</p>
-                        <p className="text-sm text-muted-foreground">contact@sabius-tech.fr</p>
+                        <a
+                          href="mailto:contact@sabius-tech.com"
+                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          contact@sabius-tech.com
+                        </a>
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
@@ -108,7 +179,7 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">Téléphone</p>
-                        <p className="text-sm text-muted-foreground">+33 1 23 45 67 89</p>
+                        <p className="text-sm text-muted-foreground">+33 (0)1 XX XX XX XX</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
@@ -116,21 +187,37 @@ const ContactPage = () => {
                         <MapPin className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">Adresse</p>
-                        <p className="text-sm text-muted-foreground">
-                          12 rue de l'Innovation<br />75008 Paris, France
-                        </p>
+                        <p className="text-sm font-medium text-foreground">Localisation</p>
+                        <p className="text-sm text-muted-foreground">Paris, France</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-accent rounded-lg p-6">
-                  <h4 className="font-heading font-semibold text-foreground mb-2">Horaires</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Lundi — Vendredi : 9h00 — 18h00<br />
-                    Réponse sous 24h ouvrées
-                  </p>
+                <div className="border-t border-border pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
+                      <Clock className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Disponibilité</p>
+                      <p className="text-sm text-muted-foreground">
+                        Lundi — Vendredi, 9h — 18h
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-border pt-6">
+                  <a
+                    href="https://linkedin.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                    Suivez-nous sur LinkedIn
+                  </a>
                 </div>
               </div>
             </AnimatedSection>
