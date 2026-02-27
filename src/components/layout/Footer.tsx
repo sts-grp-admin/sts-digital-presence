@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "@/assets/sabius_logo.png";
 
 const Footer = () => {
   return (
@@ -7,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
-            <span className="font-heading text-2xl font-extrabold text-primary">STS</span>
+            <img src={logo} alt="Sabius Tech Solutions" className="h-10 w-auto brightness-0 invert opacity-90" />
             <p className="mt-3 text-sm leading-relaxed opacity-80">
               Sabius Tech Solutions — L'expertise IT au service de vos ambitions.
             </p>

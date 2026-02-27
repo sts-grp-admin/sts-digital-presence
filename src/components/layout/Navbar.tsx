@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import logo from "@/assets/sabius_logo.png";
 
 const navLinks = [
   { label: "Accueil", to: "/" },
@@ -34,8 +35,8 @@ const Navbar = () => {
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link to="/" className="font-heading text-2xl font-extrabold tracking-tight text-primary">
-          STS
+        <Link to="/" className="flex items-center">
+          <img src={logo} alt="Sabius Tech Solutions" className="h-10 md:h-12 w-auto" />
         </Link>
 
         {/* Desktop nav */}
