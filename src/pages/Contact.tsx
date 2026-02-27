@@ -3,23 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Clock, Linkedin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage, t } from "@/i18n/LanguageContext";
+import { translations } from "@/i18n/translations";
 
 const ContactPage = () => {
   const { toast } = useToast();
+  const { lang } = useLanguage();
+  const c = translations.contact;
+
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    company: "",
-    phone: "",
-    subject: "",
-    message: "",
+    name: "", email: "", company: "", phone: "", subject: "", message: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Message envoyé",
-      description: "Nous reviendrons vers vous dans les meilleurs délais.",
+      title: t(c.toastTitle, lang),
+      description: t(c.toastDesc, lang),
     });
     setForm({ name: "", email: "", company: "", phone: "", subject: "", message: "" });
   };
@@ -34,10 +34,10 @@ const ContactPage = () => {
         <div className="container">
           <AnimatedSection className="max-w-2xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              Contactez-nous
+              {t(c.pageTitle, lang)}
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Un projet, une mission, une question ? Nous vous répondons sous 24 heures.
+              {t(c.pageSubtitle, lang)}
             </p>
           </AnimatedSection>
         </div>
@@ -53,7 +53,7 @@ const ContactPage = () => {
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Nom complet
+                      {t(c.labelName, lang)}
                     </label>
                     <input
                       type="text"
@@ -61,12 +61,12 @@ const ContactPage = () => {
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className={inputClass}
-                      placeholder="Jean Dupont"
+                      placeholder={t(c.placeholderName, lang)}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Email professionnel
+                      {t(c.labelEmail, lang)}
                     </label>
                     <input
                       type="email"
@@ -74,7 +74,7 @@ const ContactPage = () => {
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       className={inputClass}
-                      placeholder="jean@entreprise.fr"
+                      placeholder={t(c.placeholderEmail, lang)}
                     />
                   </div>
                 </div>
@@ -82,33 +82,33 @@ const ContactPage = () => {
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Entreprise
+                      {t(c.labelCompany, lang)}
                     </label>
                     <input
                       type="text"
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
                       className={inputClass}
-                      placeholder="Nom de votre entreprise"
+                      placeholder={t(c.placeholderCompany, lang)}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Téléphone <span className="text-muted-foreground font-normal">(optionnel)</span>
+                      {t(c.labelPhone, lang)} <span className="text-muted-foreground font-normal">{t(c.labelPhoneOptional, lang)}</span>
                     </label>
                     <input
                       type="tel"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className={inputClass}
-                      placeholder="+33 6 12 34 56 78"
+                      placeholder={t(c.placeholderPhone, lang)}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    Sujet
+                    {t(c.labelSubject, lang)}
                   </label>
                   <select
                     required
@@ -116,20 +116,18 @@ const ContactPage = () => {
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
                     className={inputClass}
                   >
-                    <option value="" disabled>
-                      Sélectionnez un sujet
-                    </option>
-                    <option value="projet">Nouveau projet</option>
-                    <option value="regie">Mission / Régie</option>
-                    <option value="conseil">Conseil</option>
-                    <option value="partenariat">Partenariat</option>
-                    <option value="autre">Autre</option>
+                    <option value="" disabled>{t(c.placeholderSelect, lang)}</option>
+                    <option value="projet">{t(c.optionProject, lang)}</option>
+                    <option value="regie">{t(c.optionStaff, lang)}</option>
+                    <option value="conseil">{t(c.optionConsulting, lang)}</option>
+                    <option value="partenariat">{t(c.optionPartnership, lang)}</option>
+                    <option value="autre">{t(c.optionOther, lang)}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    Message
+                    {t(c.labelMessage, lang)}
                   </label>
                   <textarea
                     required
@@ -137,17 +135,17 @@ const ContactPage = () => {
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className={`${inputClass} resize-none`}
-                    placeholder="Décrivez votre projet ou votre besoin..."
+                    placeholder={t(c.placeholderMessage, lang)}
                   />
                 </div>
 
                 <Button type="submit" size="lg" className="w-full sm:w-auto">
-                  Envoyer votre message
+                  {t(c.submitBtn, lang)}
                 </Button>
               </form>
 
               <p className="mt-4 text-xs text-muted-foreground">
-                Vos données sont traitées de manière confidentielle. Nous ne partageons jamais vos informations avec des tiers.
+                {t(c.privacy, lang)}
               </p>
             </AnimatedSection>
 
@@ -156,7 +154,7 @@ const ContactPage = () => {
               <div className="rounded-lg p-8 space-y-8" style={{ backgroundColor: "#F7F9FA" }}>
                 <div>
                   <h3 className="font-heading font-bold text-lg text-foreground mb-6">
-                    Coordonnées
+                    {t(c.coordTitle, lang)}
                   </h3>
                   <div className="space-y-5">
                     <div className="flex items-start gap-4">
@@ -164,11 +162,8 @@ const ContactPage = () => {
                         <Mail className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">Email</p>
-                        <a
-                          href="mailto:contact@sabiustechsolutions.com"
-                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                        >
+                        <p className="text-sm font-medium text-foreground">{t(c.labelEmailInfo, lang)}</p>
+                        <a href="mailto:contact@sabiustechsolutions.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                           contact@sabiustechsolutions.com
                         </a>
                       </div>
@@ -178,7 +173,7 @@ const ContactPage = () => {
                         <Phone className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">Téléphone</p>
+                        <p className="text-sm font-medium text-foreground">{t(c.labelPhoneInfo, lang)}</p>
                         <p className="text-sm text-muted-foreground">+33 (0)1 XX XX XX XX</p>
                       </div>
                     </div>
@@ -187,7 +182,7 @@ const ContactPage = () => {
                         <MapPin className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">Localisation</p>
+                        <p className="text-sm font-medium text-foreground">{t(c.labelLocation, lang)}</p>
                         <p className="text-sm text-muted-foreground">Paris, France</p>
                       </div>
                     </div>
@@ -200,10 +195,8 @@ const ContactPage = () => {
                       <Clock className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">Disponibilité</p>
-                      <p className="text-sm text-muted-foreground">
-                        Lundi — Vendredi, 9h — 18h
-                      </p>
+                      <p className="text-sm font-medium text-foreground">{t(c.labelAvailability, lang)}</p>
+                      <p className="text-sm text-muted-foreground">{t(c.availabilityText, lang)}</p>
                     </div>
                   </div>
                 </div>
@@ -216,7 +209,7 @@ const ContactPage = () => {
                     className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
                   >
                     <Linkedin className="h-5 w-5" />
-                    Suivez-nous sur LinkedIn
+                    {t(c.linkedin, lang)}
                   </a>
                 </div>
               </div>

@@ -15,95 +15,30 @@ import {
   Target,
   Shuffle,
 } from "lucide-react";
+import { useLanguage, t } from "@/i18n/LanguageContext";
+import { translations } from "@/i18n/translations";
 
-const expertises = [
-  {
-    icon: Lightbulb,
-    title: "Conseil IT & Stratégie",
-    desc: "Audit, cadrage et recommandations pour aligner votre SI avec vos objectifs métier.",
-  },
-  {
-    icon: Code2,
-    title: "Développement logiciel",
-    desc: "Conception et réalisation d'applications sur mesure, robustes et maintenables.",
-  },
-  {
-    icon: Building2,
-    title: "Architecture & Modernisation",
-    desc: "Refonte d'architectures, migration cloud et modernisation de systèmes existants.",
-  },
-  {
-    icon: BrainCircuit,
-    title: "Data & Intelligence Artificielle",
-    desc: "Structuration de données, pipelines analytics et intégration de solutions IA.",
-  },
-  {
-    icon: Plug,
-    title: "Intégration de solutions",
-    desc: "Mise en œuvre et intégration de progiciels, API et écosystèmes techniques complexes.",
-  },
-  {
-    icon: UsersRound,
-    title: "Accompagnement projet",
-    desc: "Renfort d'équipes, pilotage technique et expertise embarquée sur vos projets critiques.",
-  },
-];
+const expertiseIcons = [Lightbulb, Code2, Building2, BrainCircuit, Plug, UsersRound];
+const whyIcons = [Award, Zap, Target, Shuffle];
 
-const whyItems = [
-  {
-    icon: Award,
-    keyword: "Expertise",
-    text: "Des consultants seniors avec une maîtrise technique éprouvée sur des environnements exigeants.",
-  },
-  {
-    icon: Zap,
-    keyword: "Réactivité",
-    text: "Un interlocuteur dédié, disponible et impliqué dans la réussite de vos projets.",
-  },
-  {
-    icon: Target,
-    keyword: "Exigence",
-    text: "Des livrables de qualité, dans le respect des délais et des engagements.",
-  },
-  {
-    icon: Shuffle,
-    keyword: "Agilité",
-    text: "Une capacité d'adaptation rapide à vos contextes, contraintes et enjeux.",
-  },
-];
-
-const missions = [
-  {
-    sector: "Banque",
-    title: "Modernisation d'une plateforme de gestion des risques",
-    stack: ["Java", "Spring Boot", "AWS", "Kafka"],
-  },
-  {
-    sector: "Énergie",
-    title: "Développement d'un portail de suivi opérationnel",
-    stack: ["React", "Node.js", "PostgreSQL", "Docker"],
-  },
-  {
-    sector: "Retail",
-    title: "Intégration et automatisation des flux logistiques",
-    stack: ["Python", "Azure", "Talend", "API REST"],
-  },
+const missionStacks = [
+  ["Java", "Spring Boot", "AWS", "Kafka"],
+  ["React", "Node.js", "PostgreSQL", "Docker"],
+  ["Python", "Azure", "Talend", "API REST"],
 ];
 
 const clients = [
-  "Whize",
-  "Akkodis",
-  "Teragone Solutions",
-  "Celexio",
-  "Esmoz",
-  "Extracens",
-  "MSI Experts",
-  "Newco Data Services",
-  "Odhcom",
-  "OpenClassrooms",
+  "Whize", "Akkodis", "Teragone Solutions", "Celexio", "Esmoz",
+  "Extracens", "MSI Experts", "Newco Data Services", "Odhcom", "OpenClassrooms",
 ];
 
 const Index = () => {
+  const { lang } = useLanguage();
+  const h = translations.home;
+  const ex = translations.expertises;
+  const wi = translations.whyItems;
+  const mi = translations.missions;
+
   return (
     <>
       {/* Hero */}
@@ -119,17 +54,17 @@ const Index = () => {
         <div className="container relative py-24 md:py-36 lg:py-44">
           <AnimatedSection className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-foreground text-balance">
-              L'expertise IT au service de vos ambitions
+              {t(h.heroTitle, lang)}
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-              Conseil, développement et accompagnement technique sur mesure pour les entreprises qui exigent l'excellence.
+              {t(h.heroSubtitle, lang)}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Button asChild size="lg" className="text-base">
-                <Link to="/services">Découvrir nos services</Link>
+                <Link to="/services">{t(h.heroBtn1, lang)}</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-base">
-                <Link to="/contact">Nous contacter</Link>
+                <Link to="/contact">{t(h.heroBtn2, lang)}</Link>
               </Button>
             </div>
           </AnimatedSection>
@@ -141,33 +76,36 @@ const Index = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Nos domaines d'expertise
+              {t(h.expertiseTitle, lang)}
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl">
-              Une offre de services complète pour répondre à vos enjeux techniques, du conseil stratégique à la mise en œuvre.
+              {t(h.expertiseSubtitle, lang)}
             </p>
           </AnimatedSection>
 
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {expertises.map((s, i) => (
-              <AnimatedSection key={s.title} delay={i * 0.08}>
-                <div className="group bg-card border border-border rounded-lg p-6 h-full hover:border-primary/40 hover:shadow-md transition-all duration-300">
-                  <s.icon className="h-8 w-8 text-primary mb-4" />
-                  <h3 className="font-heading font-bold text-lg text-foreground">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    {s.desc}
-                  </p>
-                </div>
-              </AnimatedSection>
-            ))}
+            {ex.map((s, i) => {
+              const Icon = expertiseIcons[i];
+              return (
+                <AnimatedSection key={i} delay={i * 0.08}>
+                  <div className="group bg-card border border-border rounded-lg p-6 h-full hover:border-primary/40 hover:shadow-md transition-all duration-300">
+                    <Icon className="h-8 w-8 text-primary mb-4" />
+                    <h3 className="font-heading font-bold text-lg text-foreground">
+                      {t(s.title, lang)}
+                    </h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                      {t(s.desc, lang)}
+                    </p>
+                  </div>
+                </AnimatedSection>
+              );
+            })}
           </div>
 
           <AnimatedSection className="mt-10">
             <Button asChild variant="link" className="group text-base">
               <Link to="/services">
-                Voir tous nos services
+                {t(h.seeAllServices, lang)}
                 <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
@@ -180,22 +118,25 @@ const Index = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Pourquoi choisir Sabius Tech Solutions ?
+              {t(h.whyTitle, lang)}
             </h2>
           </AnimatedSection>
 
           <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {whyItems.map((item, i) => (
-              <AnimatedSection key={item.keyword} delay={i * 0.1} className="text-center">
-                <item.icon className="h-10 w-10 text-primary mx-auto mb-4" />
-                <h3 className="font-heading font-bold text-lg text-foreground">
-                  {item.keyword}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {item.text}
-                </p>
-              </AnimatedSection>
-            ))}
+            {wi.map((item, i) => {
+              const Icon = whyIcons[i];
+              return (
+                <AnimatedSection key={i} delay={i * 0.1} className="text-center">
+                  <Icon className="h-10 w-10 text-primary mx-auto mb-4" />
+                  <h3 className="font-heading font-bold text-lg text-foreground">
+                    {t(item.keyword, lang)}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {t(item.text, lang)}
+                  </p>
+                </AnimatedSection>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -205,17 +146,14 @@ const Index = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Ils nous font confiance
+              {t(h.trustTitle, lang)}
             </h2>
           </AnimatedSection>
 
           <AnimatedSection className="mt-12">
             <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
               {clients.map((name) => (
-                <span
-                  key={name}
-                  className="text-muted-foreground font-medium text-base md:text-lg tracking-wide"
-                >
+                <span key={name} className="text-muted-foreground font-medium text-base md:text-lg tracking-wide">
                   {name}
                 </span>
               ))}
@@ -224,7 +162,7 @@ const Index = () => {
 
           <AnimatedSection className="mt-10 max-w-3xl mx-auto text-center">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Nos consultants sont également intervenus dans des environnements tels que Disneyland Paris, Société Générale, Servier, Fnac, KPMG, LCL et BPCE.
+              {t(h.trustFootnote, lang)}
             </p>
           </AnimatedSection>
         </div>
@@ -235,27 +173,24 @@ const Index = () => {
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Des missions concrètes, des résultats mesurables
+              {t(h.missionsTitle, lang)}
             </h2>
           </AnimatedSection>
 
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {missions.map((m, i) => (
-              <AnimatedSection key={m.title} delay={i * 0.1}>
+            {mi.map((m, i) => (
+              <AnimatedSection key={i} delay={i * 0.1}>
                 <div className="bg-card border border-border rounded-lg p-6 h-full flex flex-col hover:border-primary/40 hover:shadow-md transition-all duration-300">
                   <Badge variant="secondary" className="w-fit mb-4 text-xs">
-                    Secteur {m.sector}
+                    {t(h.sector, lang)} {t(m.sector, lang)}
                   </Badge>
                   <h3 className="font-heading font-bold text-lg text-foreground leading-snug">
-                    {m.title}
+                    {t(m.title, lang)}
                   </h3>
                   <div className="mt-auto pt-5 flex flex-wrap gap-2">
-                    {m.stack.map((t) => (
-                      <span
-                        key={t}
-                        className="text-xs font-medium px-2.5 py-1 rounded-full border border-border text-muted-foreground"
-                      >
-                        {t}
+                    {missionStacks[i].map((tech) => (
+                      <span key={tech} className="text-xs font-medium px-2.5 py-1 rounded-full border border-border text-muted-foreground">
+                        {tech}
                       </span>
                     ))}
                   </div>
@@ -267,7 +202,7 @@ const Index = () => {
           <AnimatedSection className="mt-10 text-center">
             <Button asChild variant="link" className="group text-base">
               <Link to="/references">
-                Voir toutes nos références
+                {t(h.seeAllReferences, lang)}
                 <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
@@ -280,18 +215,14 @@ const Index = () => {
         <div className="container">
           <AnimatedSection className="text-center max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-white">
-              Un projet ? Une mission ? Parlons-en.
+              {t(h.ctaTitle, lang)}
             </h2>
             <p className="mt-4 text-white/80">
-              Nous répondons sous 24h pour étudier votre besoin.
+              {t(h.ctaSubtitle, lang)}
             </p>
             <div className="mt-8">
-              <Button
-                asChild
-                size="lg"
-                className="bg-white text-foreground hover:bg-white/90 text-base"
-              >
-                <Link to="/contact">Prendre contact</Link>
+              <Button asChild size="lg" className="bg-white text-foreground hover:bg-white/90 text-base">
+                <Link to="/contact">{t(h.ctaBtn, lang)}</Link>
               </Button>
             </div>
           </AnimatedSection>
