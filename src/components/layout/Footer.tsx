@@ -1,12 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/sabius_logo.png";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
 
 const Footer = () => {
   const { lang } = useLanguage();
+  const navigate = useNavigate();
   const f = translations.footer;
   const n = translations.nav;
+
+  const goToServices = () => {
+    navigate("/services");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <footer className="bg-night text-night-foreground">
@@ -30,10 +36,10 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-semibold text-primary-foreground mb-4">{t(f.servicesTitle, lang)}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/services" className="opacity-70 hover:opacity-100 transition-opacity">{t(f.consultingIT, lang)}</Link></li>
-              <li><Link to="/services" className="opacity-70 hover:opacity-100 transition-opacity">{t(f.development, lang)}</Link></li>
-              <li><Link to="/services" className="opacity-70 hover:opacity-100 transition-opacity">{t(f.technicalExpertise, lang)}</Link></li>
-              <li><Link to="/services" className="opacity-70 hover:opacity-100 transition-opacity">{t(f.support, lang)}</Link></li>
+              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.consultingIT, lang)}</button></li>
+              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.development, lang)}</button></li>
+              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.technicalExpertise, lang)}</button></li>
+              <li><button onClick={goToServices} className="opacity-70 hover:opacity-100 transition-opacity text-left">{t(f.support, lang)}</button></li>
             </ul>
           </div>
 
