@@ -28,11 +28,6 @@ const LegalNotice = () => {
           </div>
 
           <div>
-            <h2 className="font-heading text-xl font-semibold mb-3">{t(l.hostingTitle, lang)}</h2>
-            <p className="text-sm">{t(l.hostingText, lang)}</p>
-          </div>
-
-          <div>
             <h2 className="font-heading text-xl font-semibold mb-3">{t(l.ipTitle, lang)}</h2>
             <p className="text-sm">{t(l.ipText, lang)}</p>
           </div>
