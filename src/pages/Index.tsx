@@ -82,9 +82,9 @@ const Index = () => {
         </div>
 
         <div className="container relative py-14 md:py-20 lg:py-24">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="grid md:grid-cols-[3fr_2fr] gap-8 items-center">
             <AnimatedSection className="max-w-2xl">
-              <h1 className="text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-tight tracking-tight text-foreground text-balance">
+              <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] font-extrabold leading-tight tracking-tight text-foreground text-balance">
                 {t(h.heroTitle, lang)}
               </h1>
               <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
