@@ -69,8 +69,11 @@ const Navbar = () => {
       }`}
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex flex-col items-start">
           <img src={logo} alt="Sabius Tech Solutions" className="h-12 md:h-14 w-auto" />
+          <span className="text-[11px] md:text-xs font-light tracking-wide" style={{ color: "#5A6B7B" }}>
+            Sabius Tech Solutions
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
