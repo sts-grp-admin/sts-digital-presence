@@ -24,7 +24,6 @@ const Navbar = () => {
     { label: t(translations.nav.services, lang), to: "/services" },
     { label: t(translations.nav.references, lang), to: "/references" },
     { label: t(translations.nav.about, lang), to: "/a-propos" },
-    { label: t(translations.nav.contact, lang), to: "/contact" },
   ];
 
   useEffect(() => {
@@ -91,10 +90,10 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <LangSelector />
           <Button asChild size="default">
             <Link to="/contact">{t(translations.nav.cta, lang)}</Link>
           </Button>
+          <LangSelector />
         </div>
 
         <button
