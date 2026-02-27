@@ -1,64 +1,108 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Code2, Users, Shield, Lightbulb, Settings, BarChart3 } from "lucide-react";
+import {
+  Lightbulb,
+  Code2,
+  Building2,
+  BrainCircuit,
+  Plug,
+  UsersRound,
+} from "lucide-react";
 
 const services = [
   {
     icon: Lightbulb,
-    title: "Conseil IT & stratégie",
-    desc: "Nous vous aidons à définir votre feuille de route technique : choix d'architecture, audit de l'existant, benchmark de solutions et cadrage de projet. Notre approche est pragmatique et orientée résultats.",
-    items: ["Cadrage et avant-projet", "Choix d'architecture", "Audit technique", "Stratégie de transformation"],
+    title: "Conseil IT & Stratégie",
+    desc: "Nous aidons les directions IT et métier à prendre les bonnes décisions technologiques. Audit de l'existant, cadrage de projets, études d'opportunité et feuilles de route SI : nous intervenons en amont pour sécuriser vos choix.",
+    items: [
+      "Audit et diagnostic SI",
+      "Cadrage et études d'opportunité",
+      "Schéma directeur et feuille de route",
+      "Aide au choix de solutions",
+      "Gouvernance IT",
+    ],
   },
   {
     icon: Code2,
-    title: "Développement sur mesure",
-    desc: "De la conception à la mise en production, nous développons des applications robustes et maintenables. Back-end, front-end, API, intégrations : chaque projet est traité avec rigueur.",
-    items: ["Applications web & métier", "APIs et microservices", "Intégrations SI", "Migration et refonte"],
+    title: "Développement logiciel",
+    desc: "Nous concevons et développons des applications métier sur mesure, pensées pour durer. Notre approche allie rigueur technique, bonnes pratiques et proximité avec les équipes produit.",
+    items: [
+      "Applications web et API",
+      "Applications mobiles",
+      "Back-end et microservices",
+      "Tests et qualité logicielle",
+      "Maintenance et évolution",
+    ],
   },
   {
-    icon: Shield,
-    title: "Expertise & audit technique",
-    desc: "Nos experts interviennent sur vos sujets les plus complexes : review de code, optimisation de performances, sécurité applicative, dette technique.",
-    items: ["Revue de code", "Optimisation des performances", "Sécurité applicative", "Réduction de la dette technique"],
+    icon: Building2,
+    title: "Architecture & Modernisation",
+    desc: "Nous accompagnons la transformation de vos systèmes d'information : refonte d'architectures monolithiques, migration cloud, conteneurisation et mise en place de pratiques DevOps.",
+    items: [
+      "Architecture logicielle et technique",
+      "Migration cloud (AWS, Azure, GCP)",
+      "Conteneurisation et orchestration",
+      "CI/CD et DevOps",
+      "Refonte de SI legacy",
+    ],
   },
   {
-    icon: Users,
-    title: "Renfort d'équipe",
-    desc: "Nous intégrons vos équipes en régie ou au forfait pour renforcer votre capacité de delivery, tout en partageant nos bonnes pratiques.",
-    items: ["Assistance technique", "Développeurs senior", "Tech leads", "DevOps & SRE"],
+    icon: BrainCircuit,
+    title: "Data & Intelligence Artificielle",
+    desc: "Nous structurons vos données et mettons en œuvre des solutions concrètes : pipelines de données, tableaux de bord décisionnels et intégration de modèles IA.",
+    items: [
+      "Ingénierie de données et ETL",
+      "Data visualisation et BI",
+      "Machine Learning appliqué",
+      "Automatisation intelligente",
+      "Gouvernance des données",
+    ],
   },
   {
-    icon: Settings,
-    title: "DevOps & Cloud",
-    desc: "Automatisation, CI/CD, infrastructure as code, conteneurisation : nous mettons en place les fondations pour un delivery fiable et rapide.",
-    items: ["CI/CD pipelines", "Infrastructure as Code", "Conteneurisation", "Monitoring & observabilité"],
+    icon: Plug,
+    title: "Intégration de solutions",
+    desc: "Nous prenons en charge l'intégration technique de solutions tierces dans votre écosystème : ERP, CRM, outils métier, API partenaires. Nous garantissons la cohérence et la fiabilité de vos flux.",
+    items: [
+      "Intégration d'ERP et CRM",
+      "Connecteurs et API",
+      "Orchestration de flux",
+      "Middleware et ESB",
+      "Recette et déploiement",
+    ],
   },
   {
-    icon: BarChart3,
-    title: "Data & analytics",
-    desc: "Structuration de vos données, mise en place de pipelines et d'outils d'analyse pour des décisions éclairées.",
-    items: ["Data engineering", "Pipelines ETL", "Dashboarding", "Data governance"],
+    icon: UsersRound,
+    title: "Accompagnement projet",
+    desc: "Nous renforçons vos équipes avec des profils experts capables de monter rapidement en charge. Pilotage technique, expertise embarquée ou renfort ponctuel : nous nous adaptons à vos besoins.",
+    items: [
+      "Assistance technique et régie",
+      "Pilotage et direction technique",
+      "Expertise ponctuelle",
+      "Renfort d'équipe projet",
+      "Transfert de compétences",
+    ],
   },
 ];
 
 const ServicesPage = () => {
   return (
     <>
-      <section className="bg-card py-20 md:py-28">
+      {/* En-tête */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection className="max-w-2xl">
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Nos services</p>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              Des expertises complémentaires au service de vos projets
+              Nos services
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Chaque mission est unique. Nous mobilisons les compétences adaptées pour répondre précisément à vos besoins, qu'il s'agisse d'un conseil ponctuel ou d'un accompagnement long terme.
+              Conseil, réalisation et accompagnement technique pour répondre à vos enjeux IT les plus exigeants.
             </p>
           </AnimatedSection>
         </div>
       </section>
 
+      {/* Blocs de services */}
       <section className="bg-background py-16 md:py-24">
         <div className="container space-y-12">
           {services.map((s, i) => (
@@ -70,11 +114,18 @@ const ServicesPage = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground">{s.title}</h2>
-                  <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
-                  <ul className="mt-4 grid sm:grid-cols-2 gap-2">
+                  <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground">
+                    {s.title}
+                  </h2>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">
+                    {s.desc}
+                  </p>
+                  <ul className="mt-5 flex flex-wrap gap-2">
                     {s.items.map((item) => (
-                      <li key={item} className="flex items-center gap-2 text-sm text-foreground">
+                      <li
+                        key={item}
+                        className="flex items-center gap-2 text-sm text-foreground bg-accent/60 rounded-full px-3 py-1"
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                         {item}
                       </li>
@@ -87,16 +138,22 @@ const ServicesPage = () => {
         </div>
       </section>
 
-      <section className="bg-accent py-16 md:py-20">
+      {/* CTA */}
+      <section className="py-20 md:py-28" style={{ backgroundColor: "#2B7A78" }}>
         <div className="container text-center">
           <AnimatedSection>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Un besoin spécifique ?</h2>
-            <p className="mt-4 text-muted-foreground max-w-lg mx-auto">
-              Chaque projet est différent. Contactez-nous pour discuter de vos enjeux et construire ensemble la solution adaptée.
-            </p>
-            <Button asChild size="lg" className="mt-8">
-              <Link to="/contact">Discutons de votre projet</Link>
-            </Button>
+            <h2 className="text-2xl md:text-3xl font-bold text-white">
+              Besoin d'un accompagnement sur mesure ? Contactez-nous.
+            </h2>
+            <div className="mt-8">
+              <Button
+                asChild
+                size="lg"
+                className="bg-white text-foreground hover:bg-white/90 text-base"
+              >
+                <Link to="/contact">Nous contacter</Link>
+              </Button>
+            </div>
           </AnimatedSection>
         </div>
       </section>
