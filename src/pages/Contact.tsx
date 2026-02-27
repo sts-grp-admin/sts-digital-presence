@@ -1,7 +1,7 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Clock, Linkedin, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
 
@@ -13,9 +13,31 @@ const ContactPage = () => {
     name: "", email: "", company: "", phone: "", subject: "", message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; message?: string }>({});
+  const [canSubmit, setCanSubmit] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setCanSubmit(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const validate = (): boolean => {
+    const newErrors: { email?: string; message?: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      newErrors.email = lang === "fr" ? "Veuillez entrer un email valide." : "Please enter a valid email.";
+    }
+    if (form.message.trim().length < 10) {
+      newErrors.message = lang === "fr" ? "Le message doit contenir au moins 10 caractères." : "Message must be at least 10 characters.";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
+
     const formEl = e.target as HTMLFormElement;
     const formData = new FormData(formEl);
 
@@ -73,10 +95,16 @@ const ContactPage = () => {
                 name="contact"
                 method="POST"
                 data-netlify="true"
+                data-netlify-honeypot="bot-field"
                 onSubmit={handleSubmit}
                 className="bg-card border border-border rounded-lg p-8 space-y-6"
               >
                 <input type="hidden" name="form-name" value="contact" />
+                <p className="hidden">
+                  <label>
+                    Don't fill this out: <input name="bot-field" />
+                  </label>
+                </p>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
@@ -105,6 +133,9 @@ const ContactPage = () => {
                       className={inputClass}
                       placeholder={t(c.placeholderEmail, lang)}
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-xs text-destructive">{errors.email}</p>
+                    )}
                   </div>
                 </div>
 
@@ -170,9 +201,12 @@ const ContactPage = () => {
                     className={`${inputClass} resize-none`}
                     placeholder={t(c.placeholderMessage, lang)}
                   />
+                  {errors.message && (
+                    <p className="mt-1 text-xs text-destructive">{errors.message}</p>
+                  )}
                 </div>
 
-                <Button type="submit" size="lg" className="w-full sm:w-auto">
+                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={!canSubmit}>
                   {t(c.submitBtn, lang)}
                 </Button>
               </form>
