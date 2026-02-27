@@ -1,7 +1,6 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Landmark,
   ShieldCheck,
@@ -11,6 +10,9 @@ import {
   Building,
   Radio,
   HeartPulse,
+  Users,
+  Package,
+  Lightbulb,
 } from "lucide-react";
 
 /* ── Clients directs ── */
@@ -38,55 +40,22 @@ const environments = [
   "BPCE",
 ];
 
-/* ── Missions représentatives ── */
-const missions = [
+/* ── Modes d'intervention ── */
+const interventionModes = [
   {
-    sector: "Banque & Finance",
-    title: "Modernisation d'une plateforme de gestion des risques",
-    desc: "Refonte de l'architecture d'un système de calcul de risques. Migration d'un monolithe vers une architecture microservices cloud.",
-    stack: ["Java", "Spring Boot", "Kafka", "AWS", "PostgreSQL"],
-    duration: "18 mois",
-    mode: "Régie",
+    icon: Users,
+    title: "Régie & assistance technique",
+    text: "Nos consultants intègrent vos équipes pour apporter expertise et capacité de delivery sur vos projets en cours.",
   },
   {
-    sector: "Énergie",
-    title: "Portail de suivi opérationnel temps réel",
-    desc: "Conception et développement d'un portail de suivi d'indicateurs opérationnels critiques.",
-    stack: ["React", "Node.js", "PostgreSQL", "Docker", "Grafana"],
-    duration: "10 mois",
-    mode: "Forfait",
+    icon: Package,
+    title: "Projets au forfait",
+    text: "Nous prenons en charge la réalisation de bout en bout : cadrage, conception, développement, recette et mise en production.",
   },
   {
-    sector: "Retail & E-commerce",
-    title: "Automatisation des flux logistiques",
-    desc: "Intégration et automatisation des flux entre SI logistique, ERP et partenaires de livraison.",
-    stack: ["Python", "Azure Functions", "Talend", "API REST"],
-    duration: "8 mois",
-    mode: "Forfait",
-  },
-  {
-    sector: "Assurance",
-    title: "Refonte d'un parcours de souscription en ligne",
-    desc: "Accompagnement de la refonte d'un parcours client digital, de la conception UX à la mise en production.",
-    stack: ["React", "TypeScript", ".NET", "Azure", "Kubernetes"],
-    duration: "14 mois",
-    mode: "Régie",
-  },
-  {
-    sector: "Industrie",
-    title: "Data platform et tableaux de bord décisionnels",
-    desc: "Mise en place d'une plateforme de données et de dashboards de pilotage pour les opérations industrielles.",
-    stack: ["Python", "Spark", "Airflow", "Power BI", "Snowflake"],
-    duration: "12 mois",
-    mode: "Forfait",
-  },
-  {
-    sector: "Secteur public",
-    title: "Expertise technique sur un programme de transformation SI",
-    desc: "Intervention en tant qu'architecte technique sur un programme de modernisation SI.",
-    stack: ["Java", "Angular", "OpenShift", "Oracle", "CI/CD GitLab"],
-    duration: "24 mois",
-    mode: "Régie",
+    icon: Lightbulb,
+    title: "Conseil & expertise",
+    text: "Audit, cadrage, architecture, choix technologiques : nous intervenons ponctuellement pour éclairer vos décisions.",
   },
 ];
 
@@ -181,43 +150,29 @@ const ReferencesPage = () => {
         </div>
       </section>
 
-      {/* Missions représentatives */}
+      {/* Nos modes d'intervention */}
       <section className="bg-background py-20 md:py-28">
         <div className="container">
-          <AnimatedSection>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Des missions concrètes, des résultats mesurables
+          <AnimatedSection className="text-center max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+              Nos modes d'intervention
             </h2>
+            <p className="mt-4 text-muted-foreground leading-relaxed">
+              Nous nous adaptons à votre organisation et à vos enjeux.
+            </p>
           </AnimatedSection>
 
-          <div className="mt-12 grid md:grid-cols-2 gap-6">
-            {missions.map((m, i) => (
-              <AnimatedSection key={m.title} delay={i * 0.07}>
-                <div className="bg-card border border-border rounded-lg p-8 h-full flex flex-col hover:border-primary/40 hover:shadow-md transition-all duration-300">
-                  <Badge variant="secondary" className="w-fit mb-4 text-xs">
-                    {m.sector}
-                  </Badge>
-                  <h3 className="font-heading font-bold text-lg text-foreground leading-snug">
-                    {m.title}
+          <div className="mt-12 grid sm:grid-cols-3 gap-6">
+            {interventionModes.map((mode, i) => (
+              <AnimatedSection key={mode.title} delay={i * 0.1}>
+                <div className="bg-card border border-border rounded-lg p-8 h-full text-center hover:border-primary/40 hover:shadow-md transition-all duration-300">
+                  <mode.icon className="h-10 w-10 text-primary mx-auto mb-4" />
+                  <h3 className="font-heading font-bold text-lg text-foreground">
+                    {mode.title}
                   </h3>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                    {m.desc}
+                    {mode.text}
                   </p>
-                  <div className="mt-auto pt-5 space-y-3">
-                    <div className="flex flex-wrap gap-2">
-                      {m.stack.map((t) => (
-                        <span
-                          key={t}
-                          className="text-xs font-medium px-2.5 py-1 rounded-full border border-border text-muted-foreground"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {m.duration} · {m.mode}
-                    </p>
-                  </div>
                 </div>
               </AnimatedSection>
             ))}
