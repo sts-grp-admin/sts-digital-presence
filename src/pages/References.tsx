@@ -1,7 +1,7 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
+import { Badge } from "@/components/ui/badge";
 import {
   Landmark,
   ShieldCheck,
@@ -11,9 +11,6 @@ import {
   Building,
   Radio,
   HeartPulse,
-  Handshake,
-  Code2,
-  TrendingUp,
 } from "lucide-react";
 
 /* ── Clients directs ── */
@@ -41,31 +38,66 @@ const environments = [
   "BPCE",
 ];
 
-/* ── Notre approche ── */
-const approachBlocks = [
+/* ── Missions représentatives ── */
+const missions = [
   {
-    icon: Handshake,
-    title: "Conseil & cadrage",
-    text: "Nous analysons votre contexte, vos contraintes et vos objectifs pour proposer une solution technique adaptée.",
+    sector: "Banque & Finance",
+    title: "Modernisation d'une plateforme de gestion des risques",
+    desc: "Refonte de l'architecture d'un système de calcul de risques. Migration d'un monolithe vers une architecture microservices cloud.",
+    stack: ["Java", "Spring Boot", "Kafka", "AWS", "PostgreSQL"],
+    duration: "18 mois",
+    mode: "Régie",
   },
   {
-    icon: Code2,
-    title: "Réalisation & delivery",
-    text: "Nos consultants intègrent vos équipes ou pilotent vos projets au forfait, avec un engagement qualité et délai.",
+    sector: "Énergie",
+    title: "Portail de suivi opérationnel temps réel",
+    desc: "Conception et développement d'un portail de suivi d'indicateurs opérationnels critiques.",
+    stack: ["React", "Node.js", "PostgreSQL", "Docker", "Grafana"],
+    duration: "10 mois",
+    mode: "Forfait",
   },
   {
-    icon: TrendingUp,
-    title: "Suivi & amélioration continue",
-    text: "Nous assurons un accompagnement dans la durée : TMA, optimisation, montée en compétences de vos équipes.",
+    sector: "Retail & E-commerce",
+    title: "Automatisation des flux logistiques",
+    desc: "Intégration et automatisation des flux entre SI logistique, ERP et partenaires de livraison.",
+    stack: ["Python", "Azure Functions", "Talend", "API REST"],
+    duration: "8 mois",
+    mode: "Forfait",
+  },
+  {
+    sector: "Assurance",
+    title: "Refonte d'un parcours de souscription en ligne",
+    desc: "Accompagnement de la refonte d'un parcours client digital, de la conception UX à la mise en production.",
+    stack: ["React", "TypeScript", ".NET", "Azure", "Kubernetes"],
+    duration: "14 mois",
+    mode: "Régie",
+  },
+  {
+    sector: "Industrie",
+    title: "Data platform et tableaux de bord décisionnels",
+    desc: "Mise en place d'une plateforme de données et de dashboards de pilotage pour les opérations industrielles.",
+    stack: ["Python", "Spark", "Airflow", "Power BI", "Snowflake"],
+    duration: "12 mois",
+    mode: "Forfait",
+  },
+  {
+    sector: "Secteur public",
+    title: "Expertise technique sur un programme de transformation SI",
+    desc: "Intervention en tant qu'architecte technique sur un programme de modernisation SI.",
+    stack: ["Java", "Angular", "OpenShift", "Oracle", "CI/CD GitLab"],
+    duration: "24 mois",
+    mode: "Régie",
   },
 ];
 
 /* ── Environnements techniques ── */
 const techCategories = [
-  { label: "Développement & Architecture", items: ["Java", "Spring Boot", ".NET", "C#", "Angular", "React", "Node.js", "TypeScript", "Python", "API REST", "Microservices"] },
-  { label: "Intelligence Artificielle & Data", items: ["Python", "TensorFlow", "PyTorch", "Scikit-learn", "LangChain", "LlamaIndex", "OpenAI API", "HuggingFace Transformers", "Pandas", "Spark", "MLflow", "Power BI", "ChromaDB", "Pinecone"] },
-  { label: "Cloud & DevOps", items: ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform", "Jenkins", "GitLab CI/CD", "Ansible"] },
-  { label: "Conseil & Pilotage", items: ["Agile Scrum", "SAFe", "Kanban", "AMOA", "Cadrage SI", "Architecture d'entreprise"] },
+  { label: "Langages", items: ["Java", "Python", "TypeScript", "C#"] },
+  { label: "Front-end", items: ["React", "Angular", "Vue.js"] },
+  { label: "Back-end", items: ["Spring Boot", "Node.js", ".NET"] },
+  { label: "Cloud", items: ["AWS", "Azure", "GCP"] },
+  { label: "Data", items: ["Kafka", "Spark", "Snowflake", "Power BI"] },
+  { label: "DevOps", items: ["Docker", "Kubernetes", "GitLab CI", "Terraform"] },
 ];
 
 /* ── Secteurs d'intervention ── */
@@ -149,28 +181,43 @@ const ReferencesPage = () => {
         </div>
       </section>
 
-      {/* Notre approche */}
+      {/* Missions représentatives */}
       <section className="bg-background py-20 md:py-28">
         <div className="container">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center">
-              Une approche sur mesure, orientée résultat
+              Des missions concrètes, des résultats mesurables
             </h2>
           </AnimatedSection>
 
-          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {approachBlocks.map((block, i) => (
-              <AnimatedSection key={block.title} delay={i * 0.1}>
-                <div className="bg-card border border-border rounded-lg p-8 h-full hover:border-primary/40 hover:shadow-md transition-all duration-300 text-center">
-                  <div className="w-14 h-14 rounded-lg bg-accent flex items-center justify-center mx-auto mb-5">
-                    <block.icon className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="font-heading font-bold text-lg text-foreground">
-                    {block.title}
+          <div className="mt-12 grid md:grid-cols-2 gap-6">
+            {missions.map((m, i) => (
+              <AnimatedSection key={m.title} delay={i * 0.07}>
+                <div className="bg-card border border-border rounded-lg p-8 h-full flex flex-col hover:border-primary/40 hover:shadow-md transition-all duration-300">
+                  <Badge variant="secondary" className="w-fit mb-4 text-xs">
+                    {m.sector}
+                  </Badge>
+                  <h3 className="font-heading font-bold text-lg text-foreground leading-snug">
+                    {m.title}
                   </h3>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                    {block.text}
+                    {m.desc}
                   </p>
+                  <div className="mt-auto pt-5 space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {m.stack.map((t) => (
+                        <span
+                          key={t}
+                          className="text-xs font-medium px-2.5 py-1 rounded-full border border-border text-muted-foreground"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {m.duration} · {m.mode}
+                    </p>
+                  </div>
                 </div>
               </AnimatedSection>
             ))}

@@ -50,19 +50,13 @@ const services = [
   {
     icon: BrainCircuit,
     title: "Data & Intelligence Artificielle",
-    tagline: "De la donnée brute à l'intelligence métier",
-    desc: "Nous concevons des solutions IA sur mesure qui transforment vos données en avantage concurrentiel. Nos experts accompagnent vos équipes de la stratégie data à la mise en production.",
+    desc: "Nous structurons vos données et mettons en œuvre des solutions concrètes : pipelines de données, tableaux de bord décisionnels et intégration de modèles IA.",
     items: [
-      "IA Générative & Agents intelligents",
-      "RAG & Knowledge Management",
-      "Data Engineering & Analytics",
-      "MLOps & industrialisation",
-    ],
-    subDetails: [
-      "Conception d'agents conversationnels, automatisation de processus métier, intégration de LLM dans vos outils existants.",
-      "Pipelines de Retrieval-Augmented Generation pour exploiter vos bases documentaires internes avec précision.",
-      "Ingestion, transformation et visualisation de vos données. Pipelines ETL, dashboards décisionnels, data lakes.",
-      "Du prototype au modèle en production : CI/CD ML, monitoring, fine-tuning, déploiement scalable.",
+      "Ingénierie de données et ETL",
+      "Data visualisation et BI",
+      "Machine Learning appliqué",
+      "Automatisation intelligente",
+      "Gouvernance des données",
     ],
   },
   {
@@ -123,24 +117,17 @@ const ServicesPage = () => {
                   <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground">
                     {s.title}
                   </h2>
-                  {"tagline" in s && s.tagline && (
-                    <p className="mt-1 text-sm font-medium text-primary">{s.tagline}</p>
-                  )}
                   <p className="mt-3 text-muted-foreground leading-relaxed">
                     {s.desc}
                   </p>
-                  <ul className="mt-5 space-y-2">
-                    {s.items.map((item, idx) => (
-                      <li key={item} className="text-sm">
-                        <div className="flex items-center gap-2 text-foreground bg-accent/60 rounded-full px-3 py-1 w-fit">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                          {item}
-                        </div>
-                        {"subDetails" in s && s.subDetails?.[idx] && (
-                          <p className="mt-1 ml-5 text-xs text-muted-foreground leading-relaxed">
-                            {s.subDetails[idx]}
-                          </p>
-                        )}
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {s.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-2 text-sm text-foreground bg-accent/60 rounded-full px-3 py-1"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                        {item}
                       </li>
                     ))}
                   </ul>
