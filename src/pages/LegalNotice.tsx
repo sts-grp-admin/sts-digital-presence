@@ -22,7 +22,7 @@ const LegalNotice = () => {
               <p>RCS Paris</p>
               <p>{t(l.editorAPE, lang)}</p>
               <p>{t(l.editorTVA, lang)}</p>
-              <p>{t(l.editorDirector, lang)}</p>
+              
               <p>Email : contact@sabiustechsolutions.com</p>
             </div>
           </div>
