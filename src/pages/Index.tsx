@@ -59,7 +59,7 @@ const Index = () => {
         {/* Geometric SVG element — right side */}
         <div className="absolute right-[5%] top-0 h-full w-1/2 pointer-events-none hidden md:block">
           <svg
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] lg:w-[600px] h-[500px] lg:h-[600px]"
+            className="absolute right-0 top-[55%] -translate-y-1/2 w-[500px] lg:w-[600px] h-[500px] lg:h-[600px]"
             viewBox="0 0 600 600"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
