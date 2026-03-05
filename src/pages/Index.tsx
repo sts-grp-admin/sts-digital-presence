@@ -17,21 +17,8 @@ import {
 } from "lucide-react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
-
-const expertiseIcons = [Lightbulb, Code2, Building2, BrainCircuit, Plug, UsersRound];
-const whyIcons = [Award, Zap, Target, Shuffle];
-
-const missionStacks = [
-  ["Java", "Spring Boot", "AWS", "Kafka"],
-  ["React", "Node.js", "PostgreSQL", "Docker"],
-  ["Python", "Azure", "Talend", "API REST"],
-];
-
-const clients = [
-  "Akkodis", "Jems Datafactory", "Acensi", "OpenClassrooms", "Esmoz",
-  "Whize", "Teragone Solutions", "Celexio", "MSI Experts", "Newco Data Services",
-  "Freelance Republik",
-];
+import clientsData from "@/data/clients";
+import ClientLogoCard from "@/components/shared/ClientLogoCard";
 
 const Index = () => {
   const { lang } = useLanguage();
