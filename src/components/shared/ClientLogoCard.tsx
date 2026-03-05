@@ -6,7 +6,7 @@ interface ClientLogoCardProps {
 }
 
 const ClientLogoCard = ({ name, logo, showName = false, logoClassName }: ClientLogoCardProps) => (
-  <div className="bg-card border border-border rounded-lg p-6 flex flex-col items-center justify-center h-28 hover:border-primary/40 hover:shadow-sm transition-all duration-300 group">
+  <div className="bg-card border border-border rounded-lg p-6 flex flex-col items-center justify-center h-28 hover:border-primary/40 hover:shadow-sm transition-all duration-300 group overflow-hidden">
     <img
       src={logo}
       alt={name}
