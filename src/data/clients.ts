@@ -5,7 +5,7 @@ const clientsData = [
   { name: "OpenClassrooms", logo: "/logos/openclassrooms.png" },
   { name: "Esmoz", logo: "/logos/esmoz.png" },
   { name: "Whize", logo: "/logos/whize.png" },
-  { name: "Teragone Solutions", logo: "/logos/teragone.png" },
+  { name: "Teragone Solutions", logo: "/logos/teragone-blue.png" },
   { name: "Celexio", logo: "/logos/celexio.png" },
   { name: "MSI Experts", logo: "/logos/msi.svg" },
   { name: "Newco Data Services", logo: "/logos/newco.png" },
