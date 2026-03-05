@@ -28,8 +28,9 @@ const missionStacks = [
 ];
 
 const clients = [
-  "Whize", "Akkodis", "Teragone Solutions", "Celexio", "Esmoz",
-  "Extracens", "MSI Experts", "Newco Data Services", "Odhcom", "OpenClassrooms",
+  "Akkodis", "Jems Datafactory", "Acensi", "OpenClassrooms", "Esmoz",
+  "Whize", "Teragone Solutions", "Celexio", "MSI Experts", "Newco Data Services",
+  "Freelance Republik",
 ];
 
 const Index = () => {
