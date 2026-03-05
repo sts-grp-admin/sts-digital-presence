@@ -184,7 +184,7 @@ const Index = () => {
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {clientsData.map((client, i) => (
               <AnimatedSection key={client.name} delay={i * 0.05}>
-                <ClientLogoCard name={client.name} logo={client.logo} />
+                <ClientLogoCard name={client.name} logo={client.logo} logoClassName={client.name === "OpenClassrooms" ? "max-h-[70px] w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300" : undefined} />
               </AnimatedSection>
             ))}
           </div>
