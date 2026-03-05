@@ -1,5 +1,5 @@
 const clientsData = [
-  { name: "Akkodis", logo: "/logos/akkodis.svg" },
+  { name: "Akkodis", logo: "/logos/akkodis.png" },
   { name: "Jems Datafactory", logo: "/logos/jems.svg" },
   { name: "Acensi", logo: "/logos/acensi.png" },
   { name: "OpenClassrooms", logo: "/logos/openclassrooms.png" },
