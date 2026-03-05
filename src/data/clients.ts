@@ -2,7 +2,7 @@ const clientsData = [
   { name: "Akkodis", logo: "/logos/akkodis.png", height: 22 },
   { name: "Jems Datafactory", logo: "/logos/jems.svg", height: 34 },
   { name: "Acensi", logo: "/logos/acensi.png", height: 28 },
-  { name: "OpenClassrooms", logo: "/logos/openclassrooms-v3.png", height: 38 },
+  { name: "OpenClassrooms", logo: "/logos/openclassrooms-v2.jpg", height: 50 },
   { name: "Esmoz", logo: "/logos/esmoz-v2.png", height: 20 },
   { name: "Whize", logo: "/logos/whize.png", height: 36 },
   { name: "Teragone Solutions", logo: "/logos/teragone-blue.png", height: 34 },
