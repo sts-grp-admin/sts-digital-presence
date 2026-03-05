@@ -20,6 +20,15 @@ import { translations } from "@/i18n/translations";
 import clientsData from "@/data/clients";
 import ClientLogoCard from "@/components/shared/ClientLogoCard";
 
+const expertiseIcons = [Lightbulb, Code2, Building2, BrainCircuit, Plug, UsersRound];
+const whyIcons = [Award, Zap, Target, Shuffle];
+
+const missionStacks = [
+  ["Java", "Spring Boot", "AWS", "Kafka"],
+  ["React", "Node.js", "PostgreSQL", "Docker"],
+  ["Python", "Azure", "Talend", "API REST"],
+];
+
 const Index = () => {
   const { lang } = useLanguage();
   const h = translations.home;
