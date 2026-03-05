@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
+import clientsData from "@/data/clients";
+import ClientLogoCard from "@/components/shared/ClientLogoCard";
 
 const expertiseIcons = [Lightbulb, Code2, Building2, BrainCircuit, Plug, UsersRound];
 const whyIcons = [Award, Zap, Target, Shuffle];
@@ -25,12 +27,6 @@ const missionStacks = [
   ["Java", "Spring Boot", "AWS", "Kafka"],
   ["React", "Node.js", "PostgreSQL", "Docker"],
   ["Python", "Azure", "Talend", "API REST"],
-];
-
-const clients = [
-  "Akkodis", "Jems Datafactory", "Acensi", "OpenClassrooms", "Esmoz",
-  "Whize", "Teragone Solutions", "Celexio", "MSI Experts", "Newco Data Services",
-  "Freelance Republik",
 ];
 
 const Index = () => {
@@ -185,15 +181,13 @@ const Index = () => {
             </h2>
           </AnimatedSection>
 
-          <AnimatedSection className="mt-12">
-            <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
-              {clients.map((name) => (
-                <span key={name} className="text-muted-foreground font-medium text-base md:text-lg tracking-wide">
-                  {name}
-                </span>
-              ))}
-            </div>
-          </AnimatedSection>
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {clientsData.map((client, i) => (
+              <AnimatedSection key={client.name} delay={i * 0.05}>
+                <ClientLogoCard name={client.name} logo={client.logo} />
+              </AnimatedSection>
+            ))}
+          </div>
 
           <AnimatedSection className="mt-10 max-w-3xl mx-auto text-center">
             <p className="text-sm text-muted-foreground leading-relaxed">

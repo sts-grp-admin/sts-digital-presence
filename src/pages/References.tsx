@@ -16,12 +16,8 @@ import {
 } from "lucide-react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
-
-const clients = [
-  "Akkodis", "Jems Datafactory", "Acensi", "OpenClassrooms", "Esmoz",
-  "Whize", "Teragone Solutions", "Celexio", "MSI Experts", "Newco Data Services",
-  "Freelance Republik",
-];
+import clientsData from "@/data/clients";
+import ClientLogoCard from "@/components/shared/ClientLogoCard";
 
 const environments = [
   "Disneyland Paris", "Société Générale", "Servier", "Fnac", "KPMG", "LCL", "BPCE",
@@ -68,14 +64,10 @@ const ReferencesPage = () => {
             </h2>
           </AnimatedSection>
 
-          <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {clients.map((name, i) => (
-              <AnimatedSection key={name} delay={i * 0.05}>
-                <div className="bg-card border border-border rounded-lg p-6 flex items-center justify-center h-24 hover:border-primary/40 hover:shadow-sm transition-all duration-300">
-                  <span className="font-heading font-semibold text-foreground text-center text-sm md:text-base">
-                    {name}
-                  </span>
-                </div>
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {clientsData.map((client, i) => (
+              <AnimatedSection key={client.name} delay={i * 0.05}>
+                <ClientLogoCard name={client.name} logo={client.logo} />
               </AnimatedSection>
             ))}
           </div>
