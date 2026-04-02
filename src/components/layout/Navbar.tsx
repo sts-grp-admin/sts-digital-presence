@@ -24,6 +24,7 @@ const Navbar = () => {
     { label: t(translations.nav.services, lang), to: "/services" },
     { label: t(translations.nav.references, lang), to: "/references" },
     { label: t(translations.nav.about, lang), to: "/a-propos" },
+    { label: t(translations.nav.careers, lang), to: "/nous-recrutons" },
   ];
 
   useEffect(() => {
@@ -47,6 +48,7 @@ const Navbar = () => {
         <span key={l.code} className="flex items-center">
           <button
             onClick={() => setLang(l.code)}
+            aria-label={l.code === "fr" ? "Français" : l.code === "en" ? "English" : "Español"}
             className={`text-sm font-medium min-h-[44px] min-w-[32px] transition-colors ${
               lang === l.code ? "text-primary" : "text-muted-foreground hover:text-foreground"
             }`}

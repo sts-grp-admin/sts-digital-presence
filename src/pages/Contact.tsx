@@ -1,6 +1,6 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Clock, Linkedin, CheckCircle } from "lucide-react";
+import { Mail, MapPin, Clock, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
@@ -8,6 +8,7 @@ import { translations } from "@/i18n/translations";
 const ContactPage = () => {
   const { lang } = useLanguage();
   const c = translations.contact;
+  const v = translations.validation;
 
   const [form, setForm] = useState({
     name: "", email: "", company: "", phone: "", subject: "", message: "",
@@ -25,10 +26,10 @@ const ContactPage = () => {
     const newErrors: { email?: string; message?: string } = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
-      newErrors.email = lang === "fr" ? "Veuillez entrer un email valide." : "Please enter a valid email.";
+      newErrors.email = t(v.invalidEmail, lang);
     }
     if (form.message.trim().length < 10) {
-      newErrors.message = lang === "fr" ? "Le message doit contenir au moins 10 caractères." : "Message must be at least 10 characters.";
+      newErrors.message = t(v.messageTooShort, lang);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -38,16 +39,18 @@ const ContactPage = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    const formEl = e.target as HTMLFormElement;
-    const formData = new FormData(formEl);
+    const subjectLine = `[WEB] ${form.subject || "Contact"} — ${form.name}`;
+    const body = [
+      `Nom : ${form.name}`,
+      `Email : ${form.email}`,
+      form.company ? `Entreprise : ${form.company}` : "",
+      form.phone ? `Téléphone : ${form.phone}` : "",
+      "",
+      form.message,
+    ].filter(Boolean).join("\n");
 
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(formData as unknown as Record<string, string>).toString(),
-    })
-      .then(() => setSubmitted(true))
-      .catch(() => setSubmitted(true));
+    window.location.href = `mailto:contact@sabiustechsolutions.com?subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(body)}`;
+    setSubmitted(true);
   };
 
   const inputClass =
@@ -55,7 +58,7 @@ const ContactPage = () => {
 
   return (
     <>
-      {/* En-tête */}
+      {/* En-tete */}
       <section className="py-12 md:py-16" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container">
           <AnimatedSection className="max-w-2xl">
@@ -81,36 +84,25 @@ const ContactPage = () => {
                     <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
                   <h3 className="text-xl font-bold text-foreground">
-                    {lang === "fr" ? "Message envoyé !" : "Message sent!"}
+                    {t(v.successTitle, lang)}
                   </h3>
                   <p className="text-green-700 text-sm leading-relaxed">
-                    {lang === "fr"
-                      ? "Votre message a bien été envoyé. Nous vous répondrons sous 24h."
-                      : "Your message has been sent. We will reply within 24 hours."}
+                    {t(v.successText, lang)}
                   </p>
                 </div>
               ) : (
               <>
               <form
-                name="contact"
-                method="POST"
-                data-netlify="true"
-                data-netlify-honeypot="bot-field"
                 onSubmit={handleSubmit}
                 className="bg-card border border-border rounded-lg p-8 space-y-6"
               >
-                <input type="hidden" name="form-name" value="contact" />
-                <p className="hidden">
-                  <label>
-                    Don't fill this out: <input name="bot-field" />
-                  </label>
-                </p>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label htmlFor="contact-name" className="block text-sm font-medium text-foreground mb-2">
                       {t(c.labelName, lang)}
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       name="name"
                       required
@@ -121,10 +113,11 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label htmlFor="contact-email" className="block text-sm font-medium text-foreground mb-2">
                       {t(c.labelEmail, lang)}
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       name="email"
                       required
@@ -134,17 +127,18 @@ const ContactPage = () => {
                       placeholder={t(c.placeholderEmail, lang)}
                     />
                     {errors.email && (
-                      <p className="mt-1 text-xs text-destructive">{errors.email}</p>
+                      <p className="mt-1 text-xs text-destructive" role="alert">{errors.email}</p>
                     )}
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label htmlFor="contact-company" className="block text-sm font-medium text-foreground mb-2">
                       {t(c.labelCompany, lang)}
                     </label>
                     <input
+                      id="contact-company"
                       type="text"
                       name="company"
                       value={form.company}
@@ -154,10 +148,11 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label htmlFor="contact-phone" className="block text-sm font-medium text-foreground mb-2">
                       {t(c.labelPhone, lang)} <span className="text-muted-foreground font-normal">{t(c.labelPhoneOptional, lang)}</span>
                     </label>
                     <input
+                      id="contact-phone"
                       type="tel"
                       name="phone"
                       value={form.phone}
@@ -169,10 +164,11 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label htmlFor="contact-subject" className="block text-sm font-medium text-foreground mb-2">
                     {t(c.labelSubject, lang)}
                   </label>
                   <select
+                    id="contact-subject"
                     name="subject"
                     required
                     value={form.subject}
@@ -189,10 +185,11 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label htmlFor="contact-message" className="block text-sm font-medium text-foreground mb-2">
                     {t(c.labelMessage, lang)}
                   </label>
                   <textarea
+                    id="contact-message"
                     name="message"
                     required
                     rows={5}
@@ -202,7 +199,7 @@ const ContactPage = () => {
                     placeholder={t(c.placeholderMessage, lang)}
                   />
                   {errors.message && (
-                    <p className="mt-1 text-xs text-destructive">{errors.message}</p>
+                    <p className="mt-1 text-xs text-destructive" role="alert">{errors.message}</p>
                   )}
                 </div>
 
@@ -239,15 +236,6 @@ const ContactPage = () => {
                     </div>
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{t(c.labelPhoneInfo, lang)}</p>
-                        <p className="text-sm text-muted-foreground">+33 (0)1 XX XX XX XX</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                         <MapPin className="h-5 w-5 text-primary" />
                       </div>
                       <div>
@@ -268,18 +256,6 @@ const ContactPage = () => {
                       <p className="text-sm text-muted-foreground">{t(c.availabilityText, lang)}</p>
                     </div>
                   </div>
-                </div>
-
-                <div className="border-t border-border pt-6">
-                  <a
-                    href="https://linkedin.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                    {t(c.linkedin, lang)}
-                  </a>
                 </div>
               </div>
             </AnimatedSection>

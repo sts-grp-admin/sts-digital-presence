@@ -8,6 +8,7 @@ export const translations = {
     references: { fr: "Références", en: "References", es: "Referencias" },
     about: { fr: "À propos", en: "About", es: "Acerca de" },
     contact: { fr: "Contact", en: "Contact", es: "Contacto" },
+    careers: { fr: "Nous recrutons", en: "Careers", es: "Empleo" },
     cta: { fr: "Nous contacter", en: "Contact us", es: "Contáctenos" },
   },
 
@@ -15,8 +16,8 @@ export const translations = {
   footer: {
     tagline: {
       fr: "Sabius Tech Solutions — L'expertise IT au service de vos ambitions.",
-      en: "Sabius Tech Solutions — IT expertise at the service of your ambitions.",
-      es: "Sabius Tech Solutions — Experiencia IT al servicio de sus ambiciones.",
+      en: "Sabius Tech Solutions — IT expertise driving your ambitions forward.",
+      es: "Sabius Tech Solutions — Experiencia IT impulsando sus ambiciones.",
     },
     navigation: { fr: "Navigation", en: "Navigation", es: "Navegación" },
     servicesTitle: { fr: "Services", en: "Services", es: "Servicios" },
@@ -148,7 +149,7 @@ export const translations = {
       },
     },
     {
-      keyword: { fr: "Réactivité", en: "Responsiveness", es: "Reactividad" },
+      keyword: { fr: "Réactivité", en: "Responsiveness", es: "Capacidad de respuesta" },
       text: {
         fr: "Un interlocuteur dédié, disponible et impliqué dans la réussite de vos projets.",
         en: "A dedicated contact, available and invested in the success of your projects.",
@@ -374,7 +375,7 @@ export const translations = {
     pageTitle: { fr: "À propos", en: "About us", es: "Acerca de" },
     pageSubtitle: {
       fr: "L'expertise technique au service de vos enjeux.",
-      en: "Technical expertise at the service of your challenges.",
+      en: "Technical expertise in service of your challenges.",
       es: "Experiencia técnica al servicio de sus desafíos.",
     },
     whoTitle: { fr: "Qui sommes-nous", en: "Who we are", es: "Quiénes somos" },
@@ -513,11 +514,9 @@ export const translations = {
     },
     coordTitle: { fr: "Coordonnées", en: "Contact details", es: "Datos de contacto" },
     labelEmailInfo: { fr: "Email", en: "Email", es: "Email" },
-    labelPhoneInfo: { fr: "Téléphone", en: "Phone", es: "Teléfono" },
     labelLocation: { fr: "Localisation", en: "Location", es: "Ubicación" },
     labelAvailability: { fr: "Disponibilité", en: "Availability", es: "Disponibilidad" },
     availabilityText: { fr: "Lundi — Vendredi, 9h — 18h", en: "Monday — Friday, 9am — 6pm", es: "Lunes — Viernes, 9h — 18h" },
-    linkedin: { fr: "Suivez-nous sur LinkedIn", en: "Follow us on LinkedIn", es: "Síganos en LinkedIn" },
     toastTitle: { fr: "Message envoyé", en: "Message sent", es: "Mensaje enviado" },
     toastDesc: {
       fr: "Nous reviendrons vers vous dans les meilleurs délais.",
@@ -557,33 +556,277 @@ export const translations = {
     },
     hostingTitle: { fr: "2. Hébergement", en: "2. Hosting", es: "2. Alojamiento" },
     hostingText: {
-      fr: "Le site est hébergé par : Lovable (à compléter avec les informations exactes de l'hébergeur avant mise en production).",
-      en: "This website is hosted by: Lovable (to be completed with exact hosting details before going live).",
-      es: "El sitio está alojado por: Lovable (completar con la información exacta del alojamiento antes de la puesta en producción).",
+      fr: "Le site est hébergé par : GitHub, Inc. — 88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis — via le service GitHub Pages.",
+      en: "This website is hosted by: GitHub, Inc. — 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA — via the GitHub Pages service.",
+      es: "El sitio está alojado por: GitHub, Inc. — 88 Colin P Kelly Jr St, San Francisco, CA 94107, EE. UU. — a través del servicio GitHub Pages.",
     },
-    ipTitle: { fr: "2. Propriété intellectuelle", en: "2. Intellectual Property", es: "2. Propiedad intelectual" },
+    ipTitle: { fr: "3. Propriété intellectuelle", en: "3. Intellectual Property", es: "3. Propiedad intelectual" },
     ipText: {
       fr: "L'ensemble du contenu du site (textes, images, logo, éléments graphiques) est la propriété exclusive de Sabius Tech Solutions, sauf mention contraire. Toute reproduction, même partielle, est interdite sans autorisation préalable.",
       en: "All content on this website (text, images, logo, graphic elements) is the exclusive property of Sabius Tech Solutions, unless otherwise stated. Any reproduction, even partial, is prohibited without prior authorisation.",
       es: "Todo el contenido del sitio (textos, imágenes, logotipo, elementos gráficos) es propiedad exclusiva de Sabius Tech Solutions, salvo mención contraria. Toda reproducción, incluso parcial, está prohibida sin autorización previa.",
     },
-    dataTitle: { fr: "3. Données personnelles", en: "3. Personal Data", es: "3. Datos personales" },
+    dataTitle: { fr: "4. Données personnelles", en: "4. Personal Data", es: "4. Datos personales" },
     dataText: {
       fr: "Les données collectées via le formulaire de contact (nom, email, entreprise, téléphone, message) sont uniquement destinées à Sabius Tech Solutions pour répondre à vos demandes. Elles ne sont ni cédées ni vendues à des tiers. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition sur vos données. Pour exercer ces droits, contactez : contact@sabiustechsolutions.com",
       en: "Data collected through the contact form (name, email, company, phone, message) is used solely by Sabius Tech Solutions to respond to your enquiries. It is neither transferred nor sold to third parties. In accordance with the GDPR, you have the right to access, rectify, delete and object to the processing of your data. To exercise these rights, contact: contact@sabiustechsolutions.com",
       es: "Los datos recogidos a través del formulario de contacto (nombre, email, empresa, teléfono, mensaje) están destinados exclusivamente a Sabius Tech Solutions para responder a sus solicitudes. No se ceden ni se venden a terceros. Conforme al RGPD, usted dispone de un derecho de acceso, rectificación, supresión y oposición sobre sus datos. Para ejercer estos derechos, contacte: contact@sabiustechsolutions.com",
     },
-    cookiesTitle: { fr: "4. Cookies", en: "4. Cookies", es: "4. Cookies" },
+    cookiesTitle: { fr: "5. Cookies", en: "5. Cookies", es: "5. Cookies" },
     cookiesText: {
       fr: "Ce site peut utiliser des cookies techniques nécessaires à son bon fonctionnement. Aucun cookie publicitaire ni de tracking n'est utilisé.",
       en: "This website may use technical cookies necessary for its proper functioning. No advertising or tracking cookies are used.",
       es: "Este sitio puede utilizar cookies técnicas necesarias para su correcto funcionamiento. No se utilizan cookies publicitarias ni de seguimiento.",
     },
-    liabilityTitle: { fr: "5. Responsabilité", en: "5. Liability", es: "5. Responsabilidad" },
+    liabilityTitle: { fr: "6. Responsabilité", en: "6. Liability", es: "6. Responsabilidad" },
     liabilityText: {
       fr: "Sabius Tech Solutions s'efforce de maintenir les informations du site à jour mais ne saurait être tenue responsable d'éventuelles inexactitudes ou omissions.",
       en: "Sabius Tech Solutions endeavours to keep the information on this website up to date but cannot be held liable for any inaccuracies or omissions.",
       es: "Sabius Tech Solutions se esfuerza por mantener la información del sitio actualizada, pero no puede ser considerada responsable de posibles inexactitudes u omisiones.",
+    },
+  },
+
+  // ─── Careers page ───
+  careers: {
+    pageTitle: { fr: "Nous recrutons", en: "We're hiring", es: "Estamos contratando" },
+    pageSubtitle: {
+      fr: "Rejoignez une équipe d'experts passionnés par la technique et engagés dans la réussite de chaque mission.",
+      en: "Join a team of experts passionate about technology and committed to the success of every engagement.",
+      es: "Únase a un equipo de expertos apasionados por la tecnología y comprometidos con el éxito de cada misión.",
+    },
+    whyTitle: { fr: "Pourquoi nous rejoindre ?", en: "Why join us?", es: "¿Por qué unirse a nosotros?" },
+    whyItems: [
+      {
+        title: { fr: "Projets stimulants", en: "Challenging projects", es: "Proyectos estimulantes" },
+        text: {
+          fr: "Missions à forte valeur ajoutée dans la banque, l'énergie, le retail et le secteur public.",
+          en: "High-value engagements in banking, energy, retail and the public sector.",
+          es: "Misiones de alto valor añadido en banca, energía, retail y sector público.",
+        },
+      },
+      {
+        title: { fr: "Montée en compétences", en: "Skills development", es: "Desarrollo de competencias" },
+        text: {
+          fr: "Formations, certifications et accompagnement pour évoluer sur les technologies les plus demandées.",
+          en: "Training, certifications and support to grow on the most in-demand technologies.",
+          es: "Formación, certificaciones y acompañamiento para crecer en las tecnologías más demandadas.",
+        },
+      },
+      {
+        title: { fr: "Environnement bienveillant", en: "Supportive environment", es: "Entorno de apoyo" },
+        text: {
+          fr: "Un management de proximité, à l'écoute, avec un vrai suivi de carrière.",
+          en: "Hands-on management, attentive to your needs, with genuine career guidance.",
+          es: "Una gestión cercana, atenta, con un verdadero seguimiento de carrera.",
+        },
+      },
+    ],
+    offersTitle: { fr: "Nos offres", en: "Open positions", es: "Nuestras ofertas" },
+    filledBadge: { fr: "Poste pourvu", en: "Position filled", es: "Puesto cubierto" },
+    activeBadge: { fr: "Poste ouvert", en: "Now hiring", es: "Puesto abierto" },
+    applyBtn: { fr: "Postuler", en: "Apply", es: "Postularse" },
+    spontaneousTitle: {
+      fr: "Vous ne trouvez pas le poste idéal ?",
+      en: "Don't see the right role?",
+      es: "¿No encuentra el puesto ideal?",
+    },
+    spontaneousText: {
+      fr: "Envoyez-nous votre candidature spontanée. Nous sommes toujours à la recherche de talents.",
+      en: "Send us a spontaneous application. We are always looking for talent.",
+      es: "Envíenos su candidatura espontánea. Siempre estamos buscando talento.",
+    },
+    spontaneousBtn: { fr: "Candidature spontanée", en: "Spontaneous application", es: "Candidatura espontánea" },
+    contract: { fr: "Contrat", en: "Contract", es: "Contrato" },
+    location: { fr: "Localisation", en: "Location", es: "Ubicación" },
+    experience: { fr: "Expérience", en: "Experience", es: "Experiencia" },
+    salary: { fr: "Rémunération", en: "Salary", es: "Remuneración" },
+    remote: { fr: "Télétravail", en: "Remote work", es: "Teletrabajo" },
+    missions: { fr: "Missions principales", en: "Key responsibilities", es: "Misiones principales" },
+    stack: { fr: "Environnement technique", en: "Technical environment", es: "Entorno técnico" },
+    profile: { fr: "Profil recherché", en: "Required profile", es: "Perfil buscado" },
+    benefits: { fr: "Avantages", en: "Benefits", es: "Ventajas" },
+    offers: [
+      {
+        title: {
+          fr: "Senior Data Scientist — IA Générative & NLP",
+          en: "Senior Data Scientist — Generative AI & NLP",
+          es: "Senior Data Scientist — IA Generativa y NLP",
+        },
+        status: "active",
+        contract: { fr: "CDI — Cadre", en: "Permanent — Full-time", es: "CDI — Ejecutivo" },
+        location: { fr: "Île-de-France — Télétravail partiel", en: "Paris region — Hybrid", es: "Île-de-France — Teletrabajo parcial" },
+        experience: { fr: "5 ans minimum", en: "5+ years", es: "Mínimo 5 años" },
+        salary: { fr: "55 000 € — 65 000 € brut annuel", en: "€55,000 — €65,000 gross annual", es: "55 000 € — 65 000 € bruto anual" },
+        remote: { fr: "2 à 3 jours par semaine", en: "2 to 3 days per week", es: "2 a 3 días por semana" },
+        desc: {
+          fr: "Au sein de notre pôle Data & IA, vous concevez et déployez des solutions d'intelligence artificielle à forte valeur métier pour nos clients grands comptes. Vous intervenez sur l'ensemble du cycle de vie des modèles, du prototypage à l'industrialisation.",
+          en: "Within our Data & AI division, you design and deploy high-value artificial intelligence solutions for our enterprise clients. You work across the full model lifecycle, from prototyping to production deployment.",
+          es: "Dentro de nuestro polo de Data e IA, usted diseña y despliega soluciones de inteligencia artificial de alto valor de negocio para nuestros clientes grandes cuentas. Interviene en todo el ciclo de vida de los modelos, desde el prototipado hasta la industrialización.",
+        },
+        missions: {
+          fr: [
+            "Concevoir et entraîner des modèles de Machine Learning et de Deep Learning (NLP, séries temporelles, classification).",
+            "Développer des solutions basées sur l'IA générative : RAG, agents intelligents, fine-tuning de LLM.",
+            "Structurer et optimiser les pipelines de données (collecte, nettoyage, feature engineering).",
+            "Industrialiser les modèles via des pipelines MLOps (CI/CD, monitoring, drift detection).",
+            "Collaborer avec les équipes métier pour traduire les besoins fonctionnels en solutions data.",
+            "Assurer une veille technologique active sur les avancées en IA et les intégrer dans nos pratiques.",
+          ],
+          en: [
+            "Design and train Machine Learning and Deep Learning models (NLP, time series, classification).",
+            "Develop solutions based on generative AI: RAG, intelligent agents, LLM fine-tuning.",
+            "Structure and optimise data pipelines (collection, cleaning, feature engineering).",
+            "Industrialise models via MLOps pipelines (CI/CD, monitoring, drift detection).",
+            "Collaborate with business teams to translate functional requirements into data solutions.",
+            "Maintain active technology watch on AI advances and integrate them into our practices.",
+          ],
+          es: [
+            "Diseñar y entrenar modelos de Machine Learning y Deep Learning (NLP, series temporales, clasificación).",
+            "Desarrollar soluciones basadas en IA generativa: RAG, agentes inteligentes, fine-tuning de LLM.",
+            "Estructurar y optimizar los pipelines de datos (recolección, limpieza, feature engineering).",
+            "Industrializar los modelos mediante pipelines MLOps (CI/CD, monitoreo, drift detection).",
+            "Colaborar con los equipos de negocio para traducir las necesidades funcionales en soluciones data.",
+            "Mantener una vigilancia tecnológica activa sobre los avances en IA e integrarlos en nuestras prácticas.",
+          ],
+        },
+        techStack: ["Python", "PyTorch", "TensorFlow", "Scikit-learn", "LangChain", "OpenAI API", "HuggingFace", "Spark", "MLflow", "Docker", "AWS (SageMaker, Bedrock)", "SQL", "Git"],
+        profileItems: {
+          fr: [
+            "Bac+5 en data science, mathématiques appliquées, informatique ou équivalent.",
+            "Minimum 5 ans d'expérience en data science, dont au moins 2 ans sur des projets NLP ou IA générative.",
+            "Maîtrise de Python et de l'écosystème data/ML (PyTorch, Scikit-learn, Pandas, NumPy).",
+            "Expérience confirmée avec les LLM (GPT, Claude, Mistral) et les architectures RAG.",
+            "Solides compétences en statistiques, algèbre linéaire et optimisation.",
+            "Anglais professionnel courant.",
+          ],
+          en: [
+            "Master's degree in data science, applied mathematics, computer science or equivalent.",
+            "Minimum 5 years of experience in data science, including at least 2 years on NLP or generative AI projects.",
+            "Proficiency in Python and the data/ML ecosystem (PyTorch, Scikit-learn, Pandas, NumPy).",
+            "Proven experience with LLMs (GPT, Claude, Mistral) and RAG architectures.",
+            "Strong skills in statistics, linear algebra and optimisation.",
+            "Fluent professional English.",
+          ],
+          es: [
+            "Bac+5 en data science, matemáticas aplicadas, informática o equivalente.",
+            "Mínimo 5 años de experiencia en data science, incluyendo al menos 2 años en proyectos de NLP o IA generativa.",
+            "Dominio de Python y del ecosistema data/ML (PyTorch, Scikit-learn, Pandas, NumPy).",
+            "Experiencia confirmada con LLM (GPT, Claude, Mistral) y arquitecturas RAG.",
+            "Sólidas competencias en estadística, álgebra lineal y optimización.",
+            "Inglés profesional fluido.",
+          ],
+        },
+        benefitsItems: {
+          fr: ["Télétravail partiel (2-3 jours/semaine)", "Titres restaurant", "Prise en charge transports à 50 %", "Formations et certifications", "Ordinateur portable fourni"],
+          en: ["Hybrid work (2-3 days/week)", "Meal vouchers", "50% transport reimbursement", "Training & certifications", "Laptop provided"],
+          es: ["Teletrabajo parcial (2-3 días/semana)", "Vales de comida", "Reembolso de transporte al 50 %", "Formación y certificaciones", "Portátil proporcionado"],
+        },
+      },
+      {
+        title: {
+          fr: "Ingénieur R&D Cloud — AWS & Java",
+          en: "Cloud R&D Engineer — AWS & Java",
+          es: "Ingeniero I+D Cloud — AWS y Java",
+        },
+        status: "filled",
+        contract: { fr: "CDI — Cadre", en: "Permanent — Full-time", es: "CDI — Ejecutivo" },
+        location: { fr: "Île-de-France — Télétravail ponctuel", en: "Paris region — Occasional remote", es: "Île-de-France — Teletrabajo puntual" },
+        experience: { fr: "1 an minimum", en: "1+ year", es: "Mínimo 1 año" },
+        salary: { fr: "32 000 € — 34 000 € brut annuel", en: "€32,000 — €34,000 gross annual", es: "32 000 € — 34 000 € bruto anual" },
+        remote: { fr: "Ponctuel", en: "Occasional", es: "Puntual" },
+        desc: {
+          fr: "Au sein de l'équipe R&D, vous participez à la conception et au développement de solutions logicielles cloud innovantes. Vous intervenez sur des projets à forte dimension technique autour des architectures distribuées, du cloud AWS et de l'industrialisation logicielle, avec une ouverture progressive vers des usages IA.",
+          en: "Within the R&D team, you take part in the design and development of innovative cloud software solutions. You work on highly technical projects involving distributed architectures, AWS cloud and software industrialisation, with progressive exposure to AI use cases.",
+          es: "Dentro del equipo de I+D, usted participa en la concepción y el desarrollo de soluciones de software cloud innovadoras. Interviene en proyectos de alta dimensión técnica en torno a arquitecturas distribuidas, cloud AWS e industrialización de software, con una apertura progresiva hacia usos de IA.",
+        },
+        missions: {
+          fr: [
+            "Concevoir et développer des applications et micro-services backend en Java / Spring Boot.",
+            "Participer à la définition et à l'évolution d'architectures cloud AWS (EC2, S3, RDS, IAM, services managés).",
+            "Développer et exposer des API REST robustes, sécurisées et performantes.",
+            "Contribuer aux activités R&D : prototypes techniques, POC, amélioration continue des performances et de la scalabilité.",
+            "Mettre en œuvre les bonnes pratiques CI/CD, tests et qualité logicielle.",
+          ],
+          en: [
+            "Design and develop backend applications and micro-services in Java / Spring Boot.",
+            "Contribute to the design and evolution of AWS cloud architectures (EC2, S3, RDS, IAM, managed services).",
+            "Develop and expose robust, secure and performant REST APIs.",
+            "Contribute to R&D activities: technical prototypes, POCs, continuous performance and scalability improvement.",
+            "Implement CI/CD, testing and software quality best practices.",
+          ],
+          es: [
+            "Diseñar y desarrollar aplicaciones y micro-servicios backend en Java / Spring Boot.",
+            "Participar en la definición y evolución de arquitecturas cloud AWS (EC2, S3, RDS, IAM, servicios gestionados).",
+            "Desarrollar y exponer API REST robustas, seguras y de alto rendimiento.",
+            "Contribuir a las actividades de I+D: prototipos técnicos, POC, mejora continua del rendimiento y la escalabilidad.",
+            "Implementar las buenas prácticas de CI/CD, tests y calidad de software.",
+          ],
+        },
+        techStack: ["Java", "Spring Boot", "AWS (EC2, S3, RDS, IAM)", "REST API", "React", "Docker", "CI/CD", "Git", "Clean Code", "Event-Driven Architecture"],
+        profileItems: {
+          fr: [
+            "Bac+5 en informatique, spécialisation Cloud Computing.",
+            "Minimum 1 an d'expérience en développement backend Java.",
+            "Certification AWS souhaitée.",
+            "Maîtrise des bonnes pratiques Clean Code et architectures event-driven.",
+            "Anglais technique courant.",
+          ],
+          en: [
+            "Master's degree in computer science, Cloud Computing specialisation.",
+            "Minimum 1 year of experience in Java backend development.",
+            "AWS certification preferred.",
+            "Proficiency in Clean Code practices and event-driven architectures.",
+            "Fluent technical English.",
+          ],
+          es: [
+            "Bac+5 en informática, especialización Cloud Computing.",
+            "Mínimo 1 año de experiencia en desarrollo backend Java.",
+            "Certificación AWS deseable.",
+            "Dominio de buenas prácticas Clean Code y arquitecturas event-driven.",
+            "Inglés técnico fluido.",
+          ],
+        },
+        benefitsItems: {
+          fr: ["Indemnité transports", "Titres restaurant", "Ordinateur portable fourni", "Possibilité de télétravail"],
+          en: ["Transport allowance", "Meal vouchers", "Laptop provided", "Remote work possible"],
+          es: ["Indemnización de transporte", "Vales de comida", "Portátil proporcionado", "Posibilidad de teletrabajo"],
+        },
+      },
+    ],
+  },
+
+  // ─── 404 Page ───
+  notFound: {
+    title: { fr: "Page introuvable", en: "Page not found", es: "Página no encontrada" },
+    text: {
+      fr: "La page que vous recherchez n'existe pas ou a été déplacée.",
+      en: "The page you are looking for does not exist or has been moved.",
+      es: "La página que busca no existe o ha sido movida.",
+    },
+    btn: { fr: "Retour à l'accueil", en: "Back to home", es: "Volver al inicio" },
+  },
+
+  // ─── Form validation ───
+  validation: {
+    invalidEmail: {
+      fr: "Veuillez entrer un email valide.",
+      en: "Please enter a valid email address.",
+      es: "Introduzca una dirección de correo electrónico válida.",
+    },
+    messageTooShort: {
+      fr: "Le message doit contenir au moins 10 caractères.",
+      en: "The message must contain at least 10 characters.",
+      es: "El mensaje debe contener al menos 10 caracteres.",
+    },
+    successTitle: {
+      fr: "Message envoyé !",
+      en: "Message sent!",
+      es: "¡Mensaje enviado!",
+    },
+    successText: {
+      fr: "Votre message a bien été envoyé. Nous vous répondrons sous 24 h.",
+      en: "Your message has been sent successfully. We will reply within 24 hours.",
+      es: "Su mensaje ha sido enviado correctamente. Le responderemos en un plazo de 24 horas.",
     },
   },
 } as const;

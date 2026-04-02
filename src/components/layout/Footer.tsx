@@ -40,6 +40,7 @@ const Footer = () => {
               <li><Link to="/services" className="opacity-70 hover:opacity-100 transition-opacity">{t(n.services, lang)}</Link></li>
               <li><Link to="/references" className="opacity-70 hover:opacity-100 transition-opacity">{t(n.references, lang)}</Link></li>
               <li><Link to="/a-propos" className="opacity-70 hover:opacity-100 transition-opacity">{t(n.about, lang)}</Link></li>
+              <li><Link to="/nous-recrutons" className="opacity-70 hover:opacity-100 transition-opacity">{t(n.careers, lang)}</Link></li>
             </ul>
           </div>
 
@@ -57,7 +58,6 @@ const Footer = () => {
             <h4 className="font-heading font-semibold text-primary-foreground mb-4">{t(f.contactTitle, lang)}</h4>
             <ul className="space-y-2 text-sm opacity-70">
               <li>contact@sabiustechsolutions.com</li>
-              <li>+33 (0)1 XX XX XX XX</li>
               <li>Paris, France</li>
             </ul>
           </div>
