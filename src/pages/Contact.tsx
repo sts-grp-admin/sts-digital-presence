@@ -1,10 +1,12 @@
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Mail, MapPin, Clock, CheckCircle } from "lucide-react";
+import { Mail, MapPin, Clock, CheckCircle, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
 import { email, mailto } from "@/lib/email";
+
+const WEB3FORMS_KEY = "b53fc5e4-2dd7-495f-aede-edd7b01fc6a8";
 
 const ContactPage = () => {
   const { lang } = useLanguage();
@@ -15,6 +17,7 @@ const ContactPage = () => {
     name: "", email: "", company: "", phone: "", subject: "", message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; message?: string }>({});
   const [canSubmit, setCanSubmit] = useState(false);
 
@@ -36,22 +39,39 @@ const ContactPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const subjectLine = `[WEB] ${form.subject || "Contact"} — ${form.name}`;
-    const body = [
-      `Nom : ${form.name}`,
-      `Email : ${form.email}`,
-      form.company ? `Entreprise : ${form.company}` : "",
-      form.phone ? `Téléphone : ${form.phone}` : "",
-      "",
-      form.message,
-    ].filter(Boolean).join("\n");
+    setLoading(true);
 
-    window.location.href = mailto(`subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(body)}`);
-    setSubmitted(true);
+    const payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: `[WEB] ${form.subject || "Contact"} — ${form.name}`,
+      from_name: form.name,
+      name: form.name,
+      email: form.email,
+      company: form.company || "—",
+      phone: form.phone || "—",
+      message: form.message,
+    };
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setErrors({ message: lang === "fr" ? "Une erreur est survenue. Veuillez réessayer." : lang === "es" ? "Se produjo un error. Inténtelo de nuevo." : "An error occurred. Please try again." });
+      }
+    } catch {
+      setErrors({ message: lang === "fr" ? "Erreur réseau. Veuillez réessayer." : lang === "es" ? "Error de red. Inténtelo de nuevo." : "Network error. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass =
@@ -97,6 +117,9 @@ const ContactPage = () => {
                 onSubmit={handleSubmit}
                 className="bg-card border border-border rounded-lg p-8 space-y-6"
               >
+                {/* Honeypot anti-spam */}
+                <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
+
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="contact-name" className="block text-sm font-medium text-foreground mb-2">
@@ -204,7 +227,8 @@ const ContactPage = () => {
                   )}
                 </div>
 
-                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={!canSubmit}>
+                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={!canSubmit || loading}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {t(c.submitBtn, lang)}
                 </Button>
               </form>
