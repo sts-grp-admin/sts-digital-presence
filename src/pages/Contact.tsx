@@ -39,15 +39,25 @@ const ContactPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const subjectLabels: Record<string, typeof c.optionProject> = {
+    projet: c.optionProject,
+    regie: c.optionStaff,
+    conseil: c.optionConsulting,
+    partenariat: c.optionPartnership,
+    autre: c.optionOther,
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setLoading(true);
 
+    const subjectLabel = subjectLabels[form.subject] ? t(subjectLabels[form.subject], lang) : form.subject;
+
     const payload = {
       access_key: WEB3FORMS_KEY,
-      subject: `[WEB] ${form.subject || "Contact"} — ${form.name}`,
+      subject: `[WEB] ${subjectLabel || "Contact"} — ${form.name}`,
       from_name: form.name,
       name: form.name,
       email: form.email,
