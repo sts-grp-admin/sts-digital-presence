@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/sabius_logo.png";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
+import { email } from "@/lib/email";
 
 const Footer = () => {
   const { lang } = useLanguage();
@@ -57,7 +58,7 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-semibold text-primary-foreground mb-4">{t(f.contactTitle, lang)}</h4>
             <ul className="space-y-2 text-sm opacity-70">
-              <li>contact@sabiustechsolutions.com</li>
+              <li>{email()}</li>
               <li>Paris, France</li>
             </ul>
           </div>

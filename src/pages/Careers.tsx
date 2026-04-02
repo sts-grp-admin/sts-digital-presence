@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
+import { mailto } from "@/lib/email";
 
 const whyIcons = [Rocket, TrendingUp, Heart];
 
@@ -199,7 +200,7 @@ const CareersPage = () => {
                         {!isFilled && (
                           <div className="pt-2">
                             <Button asChild size="lg" className="text-base">
-                              <a href={`mailto:contact@sabiustechsolutions.com?subject=${encodeURIComponent(`[CANDIDATURE] ${offer.title.fr}`)}`}>
+                              <a href={mailto(`subject=${encodeURIComponent(`[CANDIDATURE] ${offer.title.fr}`)}`)}>
                                 {t(c.applyBtn, lang)}
                               </a>
                             </Button>
@@ -227,7 +228,7 @@ const CareersPage = () => {
             </p>
             <div className="mt-8">
               <Button asChild size="lg" className="bg-white text-foreground hover:bg-white/90 text-base">
-                <a href={`mailto:contact@sabiustechsolutions.com?subject=${encodeURIComponent("[CANDIDATURE] Candidature spontanée")}`}>
+                <a href={mailto(`subject=${encodeURIComponent("[CANDIDATURE] Candidature spontanée")}`)}>
                   <Send className="mr-2 h-4 w-4" />
                   {t(c.spontaneousBtn, lang)}
                 </a>

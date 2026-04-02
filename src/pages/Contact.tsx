@@ -4,6 +4,7 @@ import { Mail, MapPin, Clock, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
+import { email, mailto } from "@/lib/email";
 
 const ContactPage = () => {
   const { lang } = useLanguage();
@@ -49,7 +50,7 @@ const ContactPage = () => {
       form.message,
     ].filter(Boolean).join("\n");
 
-    window.location.href = `mailto:contact@sabiustechsolutions.com?subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto(`subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(body)}`);
     setSubmitted(true);
   };
 
@@ -229,8 +230,8 @@ const ContactPage = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{t(c.labelEmailInfo, lang)}</p>
-                        <a href="mailto:contact@sabiustechsolutions.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                          contact@sabiustechsolutions.com
+                        <a href={mailto()} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                          {email()}
                         </a>
                       </div>
                     </div>

@@ -1,5 +1,6 @@
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
+import { email } from "@/lib/email";
 
 const LegalNotice = () => {
   const { lang } = useLanguage();
@@ -23,7 +24,7 @@ const LegalNotice = () => {
               <p>{t(l.editorAPE, lang)}</p>
               <p>{t(l.editorTVA, lang)}</p>
               <p>{t(l.editorDirector, lang)}</p>
-              <p>Email : contact@sabiustechsolutions.com</p>
+              <p>Email : {email()}</p>
             </div>
           </div>
 
