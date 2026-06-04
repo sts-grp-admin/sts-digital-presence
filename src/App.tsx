@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +13,10 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import LegalNotice from "./pages/LegalNotice";
-import IK from "./pages/IK";
+
+// Outil interne : chargé uniquement à l'ouverture de /outils/ik — le site
+// public ne paie ni supabase-js, ni lz-string, ni les composants IK
+const IK = lazy(() => import("./pages/IK"));
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -32,7 +36,7 @@ const App = () => (
             <Route path="/nous-recrutons" element={<Careers />} />
             <Route path="/mentions-legales" element={<LegalNotice />} />
             {/* Outil interne (non listé dans le menu, noindex) */}
-            <Route path="/outils/ik" element={<IK />} />
+            <Route path="/outils/ik" element={<Suspense fallback={null}><IK /></Suspense>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

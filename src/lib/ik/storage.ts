@@ -62,17 +62,26 @@ export function clearMonth(year: number, month: number): void {
   localStorage.removeItem(monthKey(year, month));
 }
 
+/** Suppression des réglages locaux d'une année (purge après import cloud). */
+export function clearSettings(year: number): void {
+  localStorage.removeItem(settingsKey(year));
+}
+
 export function loadYearMonths(year: number): MonthData[] {
   return Array.from({ length: 12 }, (_, i) => loadMonth(year, i + 1));
 }
 
 // --- Sauvegarde / restauration JSON (filet de sécurité si changement de poste) ---
 
+/** Jamais dans une sauvegarde : le jeton de déverrouillage PIN voyagerait
+ *  dans un fichier partageable et serait restauré par l'import (revue PR #1). */
+const BACKUP_EXCLUDED = new Set([`${NS}:unlocked`]);
+
 export function exportBackup(): string {
   const dump: Record<string, unknown> = {};
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (key?.startsWith(`${NS}:`)) {
+    if (key?.startsWith(`${NS}:`) && !BACKUP_EXCLUDED.has(key)) {
       dump[key] = JSON.parse(localStorage.getItem(key) ?? "null");
     }
   }
@@ -86,7 +95,7 @@ export function importBackup(json: string): number {
   }
   let count = 0;
   for (const [key, value] of Object.entries(parsed.data)) {
-    if (key.startsWith(`${NS}:`)) {
+    if (key.startsWith(`${NS}:`) && !BACKUP_EXCLUDED.has(key)) {
       localStorage.setItem(key, JSON.stringify(value));
       count++;
     }

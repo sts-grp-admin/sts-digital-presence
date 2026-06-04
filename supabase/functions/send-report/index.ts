@@ -11,37 +11,15 @@
 //   IK_FROM         — expéditeur vérifié chez Resend, ex. "STS IK <ik@sabiustechsolutions.com>"
 
 import { createClient } from "npm:@supabase/supabase-js@2";
+// SOURCE UNIQUE du barème, partagée avec le site (src/lib/ik/bareme.ts la ré-exporte)
+import {
+  bracketLabel, CV_LABELS, entitlement, isValidDailyKm, round2, type Cv,
+} from "../_shared/bareme.ts";
 
-// ── Barème voiture (gelé depuis 2023) — copie autonome de src/lib/ik/bareme.ts ──
-const BAREME: Record<number, { c1: number; c2: number; fixed: number; c3: number }> = {
-  3: { c1: 0.529, c2: 0.316, fixed: 1065, c3: 0.37 },
-  4: { c1: 0.606, c2: 0.34, fixed: 1330, c3: 0.407 },
-  5: { c1: 0.636, c2: 0.357, fixed: 1395, c3: 0.427 },
-  6: { c1: 0.665, c2: 0.374, fixed: 1457, c3: 0.447 },
-  7: { c1: 0.697, c2: 0.394, fixed: 1515, c3: 0.47 },
-};
-const CV_LABELS: Record<number, string> = {
-  3: "3 CV et moins", 4: "4 CV", 5: "5 CV", 6: "6 CV", 7: "7 CV et plus",
-};
 const MONTH_NAMES = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
   "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
 ];
-
-const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
-
-function entitlement(km: number, cv: number, electric: boolean): number {
-  const b = BAREME[cv];
-  let e: number;
-  if (km <= 5000) e = km * b.c1;
-  else if (km <= 20000) e = km * b.c2 + b.fixed;
-  else e = km * b.c3;
-  if (electric) e *= 1.2;
-  return round2(e);
-}
-
-const bracketLabel = (km: number) =>
-  km <= 5000 ? "≤ 5 000 km" : km <= 20000 ? "5 001 – 20 000 km" : "> 20 000 km";
 
 const fmtEur = (n: number) =>
   n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
@@ -99,6 +77,15 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
+
+  // Allowlist serveur : seuls les comptes APPROUVÉS par STS peuvent envoyer —
+  // shouldCreateUser:false côté client n'engage que notre page (revue PR #1).
+  const profileRes = await admin
+    .from("ik_profiles").select("approved").eq("id", userId).maybeSingle();
+  if (profileRes.error || !profileRes.data?.approved) {
+    return json(403, { error: "Compte non approuvé par STS" });
+  }
+
   const [settingsRes, monthsRes] = await Promise.all([
     admin.from("ik_settings").select("*").eq("user_id", userId).eq("year", year).maybeSingle(),
     admin.from("ik_months").select("month, days").eq("user_id", userId).eq("year", year),
@@ -112,12 +99,27 @@ Deno.serve(async (req) => {
     name: string; cv: number; electric: boolean;
     depart: string; destination: string; distance_km: number;
   };
+  if (![3, 4, 5, 6, 7].includes(Number(s.cv))) {
+    return json(400, { error: "Puissance fiscale invalide" });
+  }
+  const cv = Number(s.cv) as Cv;
   const distanceKm = Number(s.distance_km);
+  if (!isValidDailyKm(distanceKm)) return json(400, { error: "Distance habituelle invalide" });
 
   type DayEntry = { km?: number; dest?: string };
   const monthDays = new Map<number, Record<string, DayEntry>>();
   for (const row of monthsRes.data as { month: number; days: Record<string, DayEntry> }[]) {
     monthDays.set(row.month, row.days ?? {});
+  }
+
+  // Bornes serveur : un km stocké hors de tout bon sens (via PostgREST direct,
+  // import corrompu…) invalide le rapport plutôt que de fabriquer un montant.
+  for (const [m, days] of monthDays) {
+    for (const e of Object.values(days)) {
+      if (e.km !== undefined && !isValidDailyKm(e.km)) {
+        return json(400, { error: `Distance invalide détectée (mois ${m}) — corrigez la saisie` });
+      }
+    }
   }
 
   const kmOfMonth = (m: number): number => {
@@ -133,9 +135,9 @@ Deno.serve(async (req) => {
   const monthKm = kmOfMonth(month!);
   const cumKm = round2(cumBefore + monthKm);
   const allowance = round2(
-    entitlement(cumKm, s.cv, s.electric) - entitlement(cumBefore, s.cv, s.electric)
+    entitlement(cumKm, cv, s.electric) - entitlement(cumBefore, cv, s.electric)
   );
-  const cumAllowance = entitlement(cumKm, s.cv, s.electric);
+  const cumAllowance = entitlement(cumKm, cv, s.electric);
 
   const days = monthDays.get(month!) ?? {};
   const sortedDays = Object.keys(days).map(Number).sort((a, b) => a - b);
@@ -148,7 +150,7 @@ Deno.serve(async (req) => {
     `INDEMNITÉS KILOMÉTRIQUES — ${monthLabel}`,
     ``,
     `Salarié : ${s.name}`,
-    `Véhicule : ${CV_LABELS[s.cv]} — ${s.electric ? "100 % électrique (+20 %)" : "thermique"}`,
+    `Véhicule : ${CV_LABELS[cv]} — ${s.electric ? "100 % électrique (+20 %)" : "thermique"}`,
     `Trajet habituel : ${s.depart} → ${s.destination} (${fmtKm(distanceKm)}/jour)`,
     ``,
     `Jours travaillés : ${sortedDays.length}`,
@@ -157,7 +159,8 @@ Deno.serve(async (req) => {
     const e = days[String(d)] ?? {};
     const km = typeof e.km === "number" ? e.km : distanceKm;
     const dest = e.dest?.trim() || s.destination;
-    const override = km !== distanceKm || dest !== s.destination ? ` → ${dest}` : "";
+    // « → destination » seulement si elle diffère : le km figure déjà sur la ligne
+    const override = dest !== s.destination ? ` → ${dest}` : "";
     lines.push(`  ${pad2(d)}/${pad2(month!)}/${year} — ${fmtKm(km)}${override}`);
   }
   lines.push(

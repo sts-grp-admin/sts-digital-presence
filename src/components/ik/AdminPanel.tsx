@@ -4,6 +4,16 @@ import { ChevronDown, Users, Zap } from "lucide-react";
 import { fetchTeam, TeamMemberData } from "@/lib/ik/cloud";
 import { CV_LABELS } from "@/lib/ik/bareme";
 import { DashboardRow, dashboardRows, fmtEur, fmtKm, MONTH_NAMES } from "@/lib/ik/compute";
+import { YearSettings } from "@/lib/ik/storage";
+
+/** Réglages de secours quand la ligne manque : seuls les km explicitement
+ *  saisis (overrides) comptent, les jours « habituels » valent 0. */
+const FALLBACK_SETTINGS: YearSettings = {
+  name: "", cv: 3, electric: false, depart: "", destination: "", distanceKm: 0,
+};
+
+const memberName = (m: TeamMemberData) =>
+  m.settings?.name || m.profileName || "Salarié sans nom";
 
 const initials = (name: string) =>
   name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]!.toUpperCase()).join("") || "?";
@@ -44,19 +54,25 @@ const MemberRow = ({ member, rows, globalMaxKm, index }: MemberRowProps) => {
         {/* Identité */}
         <div className="flex items-center gap-3 w-56 min-w-0 shrink-0">
           <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary-dark text-primary-foreground flex items-center justify-center font-heading font-bold text-sm shrink-0 shadow-sm">
-            {initials(member.settings.name)}
+            {initials(memberName(member))}
           </div>
           <div className="min-w-0">
             <p className="font-heading font-bold text-foreground truncate leading-tight">
-              {member.settings.name}
+              {memberName(member)}
             </p>
-            <p className="text-xs text-muted-foreground truncate">
-              {CV_LABELS[member.settings.cv]}
-              {member.settings.electric && (
-                <Zap className="inline h-3 w-3 -mt-0.5 ml-1 text-primary" aria-label="électrique" />
-              )}
-              {" · "}{fmtKm(member.settings.distanceKm)}/j
-            </p>
+            {member.settings ? (
+              <p className="text-xs text-muted-foreground truncate">
+                {CV_LABELS[member.settings.cv]}
+                {member.settings.electric && (
+                  <Zap className="inline h-3 w-3 -mt-0.5 ml-1 text-primary" aria-label="électrique" />
+                )}
+                {" · "}{fmtKm(member.settings.distanceKm)}/j
+              </p>
+            ) : (
+              <p className="text-xs font-medium text-amber-700 truncate">
+                ⚠ Réglages {"manquants"} — km habituels comptés à 0
+              </p>
+            )}
           </div>
         </div>
 
@@ -134,9 +150,11 @@ const MemberRow = ({ member, rows, globalMaxKm, index }: MemberRowProps) => {
                   </tbody>
                 </table>
               </div>
-              <p className="mt-2 text-[11px] text-muted-foreground">
-                {member.settings.depart} → {member.settings.destination}
-              </p>
+              {member.settings && (
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  {member.settings.depart} → {member.settings.destination}
+                </p>
+              )}
             </div>
           </motion.div>
         )}
@@ -156,7 +174,9 @@ const AdminPanel = ({ year }: { year: number }) => {
     fetchTeam(year).then(setTeam).catch(() => setError(true));
   }, [year]);
 
-  const teamRows = (team ?? []).map((m) => dashboardRows(m.settings, m.months, year));
+  const teamRows = (team ?? []).map((m) =>
+    dashboardRows(m.settings ?? FALLBACK_SETTINGS, m.months, year)
+  );
   const teamKm = teamRows.reduce((s, rows) => s + rows[11].cumKm, 0);
   const teamAllowance = teamRows.reduce((s, rows) => s + rows[11].cumAllowance, 0);
   const globalMaxKm = Math.max(1, ...teamRows.flatMap((rows) => rows.map((r) => r.km)));

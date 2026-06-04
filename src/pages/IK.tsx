@@ -15,9 +15,14 @@ import SettingsCard from "@/components/ik/SettingsCard";
 import YearDashboard from "@/components/ik/YearDashboard";
 import { email } from "@/lib/email";
 import {
-  cloudIsEmpty, fetchMonths, fetchProfile, fetchSettings, Profile,
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  fetchMonths, fetchProfile, fetchSettings, Profile,
   deleteMonth as deleteMonthCloud, sendReportCloud, upsertMonth, upsertSettings,
 } from "@/lib/ik/cloud";
+import { clearDirty, listDirty, markDirty } from "@/lib/ik/sync";
 import {
   dashboardRows, fmtEur, monthSummary, workweekDays,
 } from "@/lib/ik/compute";
@@ -27,7 +32,7 @@ import {
   ReportPayload, reportUrl,
 } from "@/lib/ik/report";
 import {
-  clearMonth, exportBackup, importBackup, loadSettings, loadYearMonths,
+  clearMonth, clearSettings, exportBackup, importBackup, loadSettings, loadYearMonths,
   MonthData, saveMonth, saveSettings, YearSettings,
 } from "@/lib/ik/storage";
 import { cloudEnabled, supabase } from "@/lib/ik/supabase";
@@ -35,8 +40,21 @@ import { cloudEnabled, supabase } from "@/lib/ik/supabase";
 // Même clé que le formulaire de contact (mode local uniquement).
 const WEB3FORMS_KEY = "b53fc5e4-2dd7-495f-aede-edd7b01fc6a8";
 
-const YEARS = [2025, 2026, 2027, 2028];
 const CURRENT_YEAR = new Date().getFullYear();
+// De 2025 à l'année courante + 1 : jamais bloqué par un redéploiement oublié
+const YEARS = Array.from(
+  { length: Math.max(CURRENT_YEAR + 1, 2028) - 2025 + 1 },
+  (_, i) => 2025 + i
+);
+
+interface ImportCandidate {
+  settings: YearSettings | null;
+  months: { month: number; data: MonthData }[];
+  label: string;
+}
+
+const importDismissedKey = (uid: string, year: number) =>
+  `ik:v1:u:${uid}:import-dismissed:${year}`;
 const emptyMonths = (): MonthData[] => Array.from({ length: 12 }, () => ({ days: {} }));
 
 const IKPage = () => {
@@ -60,6 +78,8 @@ const IKPage = () => {
   const [months, setMonths] = useState<MonthData[]>(emptyMonths);
   const [loadingData, setLoadingData] = useState(false);
   const [sending, setSending] = useState(false);
+  /** Données locales (mode PIN) trouvées sur ce poste : import proposé, jamais automatique */
+  const [importCandidate, setImportCandidate] = useState<ImportCandidate | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Page interne : ne pas indexer
@@ -111,21 +131,22 @@ const IKPage = () => {
             return;
           }
 
-          // Salarié : migration automatique des données locales au premier passage
-          const localSettings = loadSettings(year);
-          const localMonths = loadYearMonths(year);
-          const hasLocal =
-            localSettings !== null || localMonths.some((m) => Object.keys(m.days).length > 0);
-          let migrated = false;
-          if (hasLocal && (await cloudIsEmpty(year))) {
-            if (localSettings) await upsertSettings(year, localSettings);
-            for (let i = 0; i < 12; i++) {
-              if (Object.keys(localMonths[i].days).length > 0) {
-                await upsertMonth(year, i + 1, localMonths[i]);
-              }
+          // Salarié : re-pousser d'abord les saisies non synchronisées (hors-ligne,
+          // onglet fermé en plein envoi…) — rien ne doit être écrasé par le cloud
+          const userId = session.user.id;
+          let pendingSync = 0;
+          for (const dirty of listDirty(userId, year)) {
+            try {
+              await upsertMonth(year, dirty.month, dirty.data);
+              clearDirty(userId, year, dirty.month);
+            } catch {
+              pendingSync++;
             }
-            migrated = true;
           }
+          if (pendingSync > 0) {
+            toast.warning(`${pendingSync} mois en attente de synchronisation — vérifiez votre connexion.`);
+          }
+
           const [s, m] = await Promise.all([fetchSettings(year), fetchMonths(year)]);
           const fb = s ? null : await fetchSettings(year - 1).catch(() => null);
           if (cancelled) return;
@@ -133,7 +154,28 @@ const IKPage = () => {
           setMonths(m);
           setFallbackSettings(fb);
           setProfile(p);
-          if (migrated) toast.success("Vos données locales ont été importées dans votre compte.");
+
+          // Données locales du mode PIN : PROPOSER l'import (jamais automatique —
+          // sur un poste partagé elles peuvent appartenir à quelqu'un d'autre),
+          // et seulement pour combler des trous (idempotent, reprend après échec)
+          if (!localStorage.getItem(importDismissedKey(userId, year))) {
+            const localSettings = loadSettings(year);
+            const localMonths = loadYearMonths(year);
+            const gaps: { month: number; data: MonthData }[] = [];
+            for (let i = 0; i < 12; i++) {
+              const localFilled = Object.keys(localMonths[i].days).length > 0;
+              const cloudEmpty = Object.keys(m[i].days).length === 0;
+              if (localFilled && cloudEmpty) gaps.push({ month: i + 1, data: localMonths[i] });
+            }
+            const settingsToImport = !s && localSettings ? localSettings : null;
+            if (settingsToImport || gaps.length > 0) {
+              setImportCandidate({
+                settings: settingsToImport,
+                months: gaps,
+                label: localSettings?.name || "sans nom",
+              });
+            }
+          }
         } catch {
           if (!cancelled) toast.error("Chargement impossible. Vérifiez votre connexion puis rechargez.");
         } finally {
@@ -158,17 +200,26 @@ const IKPage = () => {
     [settings, months, year]
   );
 
-  // ── Persistance (auto-save, cloud + miroir local) ──
+  // ── Persistance (auto-save) ──
+  // Cloud : marqué « dirty » (clé rattachée à l'utilisateur) AVANT l'upsert,
+  // démarqué seulement au succès → une saisie hors-ligne est re-poussée au
+  // prochain chargement au lieu d'être perdue. Aucune écriture dans les clés
+  // locales non rattachées (réservées au mode PIN) : pas de fuite entre comptes.
   const persistMonth = useCallback(
     (m: number, data: MonthData) => {
-      saveMonth(year, m, data); // miroir local : cache hors-ligne + mode local
-      if (cloudReady) {
-        upsertMonth(year, m, data).catch(() =>
-          toast.error("Synchronisation échouée — vérifiez votre connexion.")
-        );
+      if (cloudReady && session) {
+        const userId = session.user.id;
+        markDirty(userId, year, m, data);
+        upsertMonth(year, m, data)
+          .then(() => clearDirty(userId, year, m))
+          .catch(() =>
+            toast.error("Hors-ligne ? Saisie conservée — elle sera synchronisée au prochain chargement.")
+          );
+      } else {
+        saveMonth(year, m, data);
       }
     },
-    [year, cloudReady]
+    [year, cloudReady, session]
   );
 
   const updateMonth = useCallback(
@@ -231,11 +282,39 @@ const IKPage = () => {
 
   const handleSaveSettings = (s: YearSettings) => {
     setSettings(s);
-    saveSettings(year, s);
     if (cloudReady) {
-      upsertSettings(year, s).catch(() => toast.error("Synchronisation des réglages échouée."));
+      upsertSettings(year, s).catch(() => toast.error("Synchronisation des réglages échouée — réessayez."));
+    } else {
+      saveSettings(year, s);
     }
     toast.success(`Réglages ${year} enregistrés.`);
+  };
+
+  // ── Import des données locales (mode PIN) après confirmation explicite ──
+  const confirmImport = async () => {
+    if (!importCandidate) return;
+    const candidate = importCandidate;
+    setImportCandidate(null);
+    try {
+      if (candidate.settings) await upsertSettings(year, candidate.settings);
+      for (const gap of candidate.months) await upsertMonth(year, gap.month, gap.data);
+      // Purge des données locales importées : elles ne seront plus proposées
+      // (ni à ce compte, ni à un autre sur ce poste partagé)
+      for (const gap of candidate.months) clearMonth(year, gap.month);
+      if (candidate.settings) clearSettings(year);
+      const [s, m] = await Promise.all([fetchSettings(year), fetchMonths(year)]);
+      setSettings(s);
+      setMonths(m);
+      toast.success("Données locales importées dans votre compte.");
+    } catch {
+      // Idempotent : seuls les trous restants seront reproposés au prochain chargement
+      toast.error("Import incomplet — rien n'est perdu, il sera reproposé au prochain chargement.");
+    }
+  };
+
+  const dismissImport = () => {
+    if (session) localStorage.setItem(importDismissedKey(session.user.id, year), "1");
+    setImportCandidate(null);
   };
 
   // ── Envoi ──
@@ -243,13 +322,29 @@ const IKPage = () => {
     if (!settings || !summary || !dashboard) return;
     setSending(true);
     try {
-      if (cloudReady) {
-        // Pièce jointe générée ici, cumul/indemnité revérifiés côté serveur
+      if (cloudReady && session) {
+        // Flush AVANT envoi : la base doit refléter exactement l'écran, sinon
+        // la pièce jointe (générée ici) contredirait le corps de l'email
+        // (recalculé serveur). Un échec de flush ANNULE l'envoi.
+        const userId = session.user.id;
+        for (const dirty of listDirty(userId, year)) {
+          await upsertMonth(year, dirty.month, dirty.data);
+          clearDirty(userId, year, dirty.month);
+        }
+        await upsertMonth(year, month, months[month - 1]);
+
         const { base64, filename } = await buildMonthXlsxBase64(
           settings, summary, year, month, dashboard
         );
         const res = await sendReportCloud(year, month, base64, filename);
-        toast.success(`Rapport envoyé à ${email()} — ${fmtEur(res.allowance)} (validé serveur).`);
+        if (Math.abs(res.allowance - summary.allowance) > 0.005) {
+          toast.warning(
+            `Le serveur a calculé ${fmtEur(res.allowance)} (écran : ${fmtEur(summary.allowance)}). ` +
+            "Données modifiées depuis un autre appareil ? Rechargez la page et revérifiez."
+          );
+        } else {
+          toast.success(`Rapport envoyé à ${email()} — ${fmtEur(res.allowance)} (validé serveur).`);
+        }
       } else {
         const payload = buildPayload(settings, months[month - 1], year, month, summary.cumKmBefore);
         const body = buildEmailBody(payload, summary, reportUrl(payload));
@@ -331,6 +426,26 @@ const IKPage = () => {
 
   return (
     <>
+      {/* Import des données locales : toujours sur confirmation explicite */}
+      <AlertDialog open={importCandidate !== null}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Données locales trouvées sur ce poste</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ce navigateur contient des indemnités {year} saisies hors connexion
+              (nom : « {importCandidate?.label} » —{" "}
+              {importCandidate?.months.length ?? 0} mois{importCandidate?.settings ? " + réglages" : ""}).
+              Les importer dans votre compte <strong>{session?.user.email}</strong> ?
+              Si ces données ne sont pas les vôtres, choisissez « Ignorer ».
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={dismissImport}>Ignorer</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmImport}>Importer</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <section className="py-8 md:py-10 border-b border-border" style={{ backgroundColor: "#F7F9FA" }}>
         <div className="container flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -343,7 +458,15 @@ const IKPage = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
+            <Select
+              value={String(year)}
+              onValueChange={(v) => {
+                const y = Number(v);
+                setYear(y);
+                // Mois courant pour l'année en cours, janvier sinon
+                setMonth(y === CURRENT_YEAR ? new Date().getMonth() + 1 : 1);
+              }}
+            >
               <SelectTrigger aria-label="Année" className="w-24 bg-card">
                 <SelectValue />
               </SelectTrigger>

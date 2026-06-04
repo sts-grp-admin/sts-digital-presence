@@ -1,4 +1,4 @@
-import { bracketLabel, Cv, entitlement, monthlyAllowance, round2 } from "./bareme";
+import { bracketLabel, entitlement, isValidDailyKm, monthlyAllowance, round2 } from "./bareme";
 import { MonthData, YearSettings } from "./storage";
 
 export const MONTH_NAMES = [
@@ -68,7 +68,9 @@ export function monthTrips(
       dateISO: `${year}-${pad2(month)}-${pad2(day)}`,
       depart: settings.depart,
       destination: entry.dest?.trim() || settings.destination,
-      km: entry.km ?? settings.distanceKm,
+      // Garde-fou : un km aberrant (import corrompu, écriture API directe)
+      // retombe sur la distance habituelle au lieu de polluer les totaux
+      km: isValidDailyKm(entry.km) ? entry.km : settings.distanceKm,
     }));
 }
 

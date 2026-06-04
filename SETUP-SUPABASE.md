@@ -11,16 +11,22 @@ email avec le **xlsx en pièce jointe**.
 1. Créez un compte sur <https://supabase.com> → **New project**
    - Région : **Europe (Frankfurt / eu-central-1)** (RGPD)
    - Notez le mot de passe base (vous n'en aurez plus besoin ensuite)
-2. **SQL Editor** → collez tout le contenu de `supabase/migrations/0001_ik.sql` → **Run**
-3. **Authentication → Sign In / Up** :
-   - Désactivez **« Allow new users to sign up »** (inscriptions fermées : invitation uniquement)
-4. **Authentication → Users → Invite user** : invitez votre email + ceux des 5 salariés
-5. Déclarez-vous admin — SQL Editor :
+2. **SQL Editor** → collez `supabase/migrations/0001_ik.sql` → **Run**, puis `0002_approved.sql` → **Run**
+3. **Authentication → Sign In / Up** : laissez **« Allow new users to sign up » ACTIVÉ**.
+   ⚠️ Contre-intuitif mais nécessaire : GoTrue bloque TOUT le endpoint de connexion par
+   lien email quand ce toggle est désactivé. La protection réelle est double :
+   la page ne crée jamais de compte (`shouldCreateUser: false`) et un compte
+   auto-créé par l'API reste `approved = false` → il ne peut ni écrire ni envoyer.
+4. **Authentication → Users → Invite user** (ou Create new user + Auto Confirm) :
+   votre email + ceux des salariés
+5. Déclarez-vous admin et approuvez chaque salarié — SQL Editor :
    ```sql
    update public.ik_profiles set is_admin = true
    where id = (select id from auth.users where email = 'contact@sabiustechsolutions.com');
+   -- pour CHAQUE salarié (obligatoire depuis 0002) :
+   update public.ik_profiles set approved = true
+   where id = (select id from auth.users where email = 'salarie@email.fr');
    ```
-   (si la ligne n'existe pas encore, connectez-vous une première fois sur la page puis relancez)
 
 ## 2. Resend (~10 min)
 
@@ -70,7 +76,8 @@ VITE_SUPABASE_ANON_KEY=eyJ...
 
 ## Sécurité — rappels
 
-- Inscriptions fermées : seuls les emails **invités** peuvent se connecter.
+- Allowlist serveur : un compte non **approuvé** (`ik_profiles.approved`) ne peut ni
+  écrire ses IK ni déclencher d'envoi, même s'il s'est créé via l'API publique.
 - RLS : un salarié ne peut techniquement lire/écrire que **ses** lignes ; vous (is_admin) lisez tout.
 - Personne ne peut s'auto-promouvoir admin (colonne protégée).
 - L'Edge Function n'envoie **qu'à votre adresse** (secret `IK_RECIPIENT`), recalcule le

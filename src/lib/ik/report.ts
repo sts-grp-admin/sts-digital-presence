@@ -1,5 +1,5 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
-import { Cv, CV_LABELS } from "./bareme";
+import { Cv, CV_LABELS, isValidDailyKm } from "./bareme";
 import { fmtDate, fmtEur, fmtKm, MONTH_NAMES, MonthSummary } from "./compute";
 import { DayEntry, MonthData, YearSettings } from "./storage";
 
@@ -23,13 +23,43 @@ export function encodeReport(payload: ReportPayload): string {
   return compressToEncodedURIComponent(JSON.stringify(payload));
 }
 
+/** Validation stricte : un lien altéré/tronqué doit donner « lien invalide »,
+ *  jamais une page blanche ni des NaN (revue PR #1). */
+function isValidPayload(p: unknown): p is ReportPayload {
+  if (typeof p !== "object" || p === null) return false;
+  const r = p as Record<string, unknown>;
+  if (r.v !== 1) return false;
+  if (!Number.isInteger(r.year) || (r.year as number) < 2020 || (r.year as number) > 2100) return false;
+  if (!Number.isInteger(r.month) || (r.month as number) < 1 || (r.month as number) > 12) return false;
+  if (!Number.isFinite(r.cumKmBefore) || (r.cumKmBefore as number) < 0) return false;
+
+  const s = r.settings as Record<string, unknown> | undefined;
+  if (
+    !s || typeof s.name !== "string" ||
+    ![3, 4, 5, 6, 7].includes(s.cv as number) ||
+    typeof s.electric !== "boolean" ||
+    typeof s.depart !== "string" || typeof s.destination !== "string" ||
+    !isValidDailyKm(s.distanceKm)
+  ) return false;
+
+  if (typeof r.days !== "object" || r.days === null) return false;
+  for (const [key, entry] of Object.entries(r.days as Record<string, unknown>)) {
+    const day = Number(key);
+    if (!Number.isInteger(day) || day < 1 || day > 31) return false;
+    if (typeof entry !== "object" || entry === null) return false;
+    const { km, dest } = entry as DayEntry;
+    if (km !== undefined && !isValidDailyKm(km)) return false;
+    if (dest !== undefined && typeof dest !== "string") return false;
+  }
+  return true;
+}
+
 export function decodeReport(encoded: string): ReportPayload | null {
   try {
     const json = decompressFromEncodedURIComponent(encoded);
     if (!json) return null;
-    const parsed = JSON.parse(json) as ReportPayload;
-    if (parsed.v !== 1 || !parsed.settings || !parsed.days) return null;
-    return parsed;
+    const parsed: unknown = JSON.parse(json);
+    return isValidPayload(parsed) ? parsed : null;
   } catch {
     return null;
   }
@@ -70,10 +100,9 @@ export function buildEmailBody(
     ``,
   ];
   for (const trip of summary.trips) {
+    // « → destination » seulement si elle diffère : le km figure déjà sur la ligne
     const override =
-      trip.km !== settings.distanceKm || trip.destination !== settings.destination
-        ? ` → ${trip.destination}`
-        : "";
+      trip.destination !== settings.destination ? ` → ${trip.destination}` : "";
     lines.push(`  ${fmtDate(year, month, trip.day)} — ${fmtKm(trip.km)}${override}`);
   }
   lines.push(

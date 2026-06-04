@@ -246,7 +246,9 @@ export async function buildMonthXlsxBase64(
 
 const csvNum = (n: number): string => n.toFixed(2).replace(".", ",");
 const csvField = (v: string | number): string => {
-  const s = String(v);
+  let s = String(v);
+  // Anti-injection de formule Excel : neutraliser = + - @ et contrôles en tête
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
   return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 };
 const csvLine = (...fields: (string | number)[]): string => fields.map(csvField).join(";");

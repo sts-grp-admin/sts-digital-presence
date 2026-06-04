@@ -127,49 +127,60 @@ export async function deleteMonth(year: number, month: number): Promise<void> {
   if (error) throw error;
 }
 
-/** Vrai si le compte n'a encore AUCUNE donnée pour cette année (migration locale → cloud). */
-export async function cloudIsEmpty(year: number): Promise<boolean> {
-  const id = await uid();
-  const [s, m] = await Promise.all([
-    sb().from("ik_settings").select("year", { count: "exact", head: true })
-      .eq("user_id", id).eq("year", year),
-    sb().from("ik_months").select("year", { count: "exact", head: true })
-      .eq("user_id", id).eq("year", year),
-  ]);
-  if (s.error) throw s.error;
-  if (m.error) throw m.error;
-  return (s.count ?? 0) === 0 && (m.count ?? 0) === 0;
-}
-
 // --- Vue admin (RLS : seulement si ik_profiles.is_admin) ---
 
 export interface TeamMemberData {
   userId: string;
-  settings: YearSettings;
+  /** null = des mois existent mais pas de ligne réglages (état atteignable :
+   *  upsert de réglages échoué, migration partielle) — à signaler, pas à cacher */
+  settings: YearSettings | null;
+  /** Nom de secours (ik_profiles) quand les réglages manquent */
+  profileName: string;
   months: MonthData[];
 }
 
 export async function fetchTeam(year: number): Promise<TeamMemberData[]> {
-  const [settingsRes, monthsRes] = await Promise.all([
+  const [settingsRes, monthsRes, profilesRes] = await Promise.all([
     sb().from("ik_settings").select("*").eq("year", year),
     sb().from("ik_months").select("user_id, month, days").eq("year", year),
+    sb().from("ik_profiles").select("id, name, is_admin"),
   ]);
   if (settingsRes.error) throw settingsRes.error;
   if (monthsRes.error) throw monthsRes.error;
+  if (profilesRes.error) throw profilesRes.error;
+
+  const profiles = new Map(
+    (profilesRes.data ?? []).map((p) => [p.id as string, p as { name: string; is_admin: boolean }])
+  );
+  const emptyYear = () => Array.from({ length: 12 }, () => ({ days: {} }));
 
   const byUser = new Map<string, TeamMemberData>();
   for (const row of (settingsRes.data ?? []) as SettingsRow[]) {
     byUser.set(row.user_id, {
       userId: row.user_id,
       settings: toSettings(row),
-      months: Array.from({ length: 12 }, () => ({ days: {} })),
+      profileName: profiles.get(row.user_id)?.name ?? "",
+      months: emptyYear(),
     });
   }
   for (const row of (monthsRes.data ?? []) as MonthRow[]) {
-    const member = byUser.get(row.user_id);
-    if (member) member.months[row.month - 1] = { days: row.days ?? {} };
+    let member = byUser.get(row.user_id);
+    if (!member) {
+      // Mois sans réglages : le salarié doit quand même apparaître au cockpit
+      member = {
+        userId: row.user_id,
+        settings: null,
+        profileName: profiles.get(row.user_id)?.name ?? "",
+        months: emptyYear(),
+      };
+      byUser.set(row.user_id, member);
+    }
+    member.months[row.month - 1] = { days: row.days ?? {} };
   }
-  return [...byUser.values()].sort((a, b) => a.settings.name.localeCompare(b.settings.name));
+  const label = (m: TeamMemberData) => m.settings?.name || m.profileName || "Salarié sans nom";
+  return [...byUser.values()]
+    .filter((m) => !profiles.get(m.userId)?.is_admin) // l'admin n'est pas un salarié
+    .sort((a, b) => label(a).localeCompare(label(b)));
 }
 
 /** Envoi du rapport via l'Edge Function (cumul recalculé côté serveur, xlsx en pièce jointe). */

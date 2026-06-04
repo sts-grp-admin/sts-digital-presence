@@ -156,6 +156,50 @@ describe("lien magique — encode/décode", () => {
     expect(decodeReport("nimporte-quoi")).toBeNull();
     expect(decodeReport("")).toBeNull();
   });
+
+  it("rejette un payload structurellement faux (lien altéré)", () => {
+    const base = buildPayload(settings6cv, { days: { 4: {} } }, 2026, 5, 4300);
+    const mutate = (patch: object) =>
+      decodeReport(encodeReport({ ...base, ...patch } as never));
+    expect(mutate({ settings: { ...settings6cv, cv: 9 } })).toBeNull();
+    expect(mutate({ month: 13 })).toBeNull();
+    expect(mutate({ month: 0 })).toBeNull();
+    expect(mutate({ cumKmBefore: Number.NaN })).toBeNull();
+    expect(mutate({ cumKmBefore: -1 })).toBeNull();
+    expect(mutate({ settings: { ...settings6cv, distanceKm: Infinity } })).toBeNull();
+    expect(mutate({ days: { 99: {} } })).toBeNull();
+    expect(mutate({ days: { 4: { km: -5 } } })).toBeNull();
+    expect(mutate({ days: { 4: { km: 1e308 } } })).toBeNull();
+  });
+});
+
+describe("garde-fous des distances aberrantes", () => {
+  it("un km hors bornes retombe sur la distance habituelle", () => {
+    const data: MonthData = {
+      days: { 3: { km: Infinity }, 4: { km: -10 }, 5: { km: 1e308 }, 6: { km: 120 } },
+    };
+    const trips = monthTrips(settings6cv, data, 2026, 5);
+    expect(trips.map((t) => t.km)).toEqual([86, 86, 86, 120]);
+  });
+});
+
+describe("sauvegarde JSON — jamais le jeton de déverrouillage", () => {
+  beforeEach(() => localStorage.clear());
+
+  it("exclut ik:v1:unlocked de l'export ET de l'import", async () => {
+    const { exportBackup, importBackup } = await import("./storage");
+    localStorage.setItem("ik:v1:unlocked", "1");
+    saveMonth(2026, 1, makeMonth(3));
+    const backup = exportBackup();
+    expect(backup).not.toContain("unlocked");
+
+    localStorage.clear();
+    const tampered = JSON.parse(backup);
+    tampered.data["ik:v1:unlocked"] = "1"; // sauvegarde trafiquée
+    importBackup(JSON.stringify(tampered));
+    expect(localStorage.getItem("ik:v1:unlocked")).toBeNull();
+    expect(Object.keys(loadMonth(2026, 1).days)).toHaveLength(3);
+  });
 });
 
 describe("persistance — indépendance des mois", () => {
