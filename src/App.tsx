@@ -12,6 +12,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import LegalNotice from "./pages/LegalNotice";
+import IK from "./pages/IK";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -30,6 +31,8 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/nous-recrutons" element={<Careers />} />
             <Route path="/mentions-legales" element={<LegalNotice />} />
+            {/* Outil interne (non listé dans le menu, noindex) */}
+            <Route path="/outils/ik" element={<IK />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

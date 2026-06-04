@@ -1,0 +1,30 @@
+# Le free tier Supabase met le projet en pause après 7 jours sans activité
+# base de données. Ce ping hebdomadaire (une vraie requête SQL via PostgREST)
+# le maintient éveillé. Ne fait rien tant que les variables ne sont pas définies.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "0 6 * * 1,4" # lundi et jeudi 06:00 UTC (marge de sécurité)
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping database
+        env:
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Variables Supabase non configurées — rien à faire."
+            exit 0
+          fi
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "$SUPABASE_URL/rest/v1/ik_months?select=year&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "HTTP $code"
+          # 200 (RLS filtre les lignes mais la requête touche bien la base)
+          [ "$code" = "200" ] || exit 1

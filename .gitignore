@@ -12,6 +12,18 @@ dist
 dist-ssr
 *.local
 
+# Fichiers Excel locaux (exemples IK avec données personnelles — ne jamais committer)
+*.xlsx
+*.xls
+
+# Données salariés (noms, adresses personnelles) — ne JAMAIS committer
+salarie/
+
+# Secrets locaux (clés API) — ne JAMAIS committer
+.env
+supabase/.env
+supabase/.temp/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -27,6 +27,11 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+        env:
+          # Variables de dépôt (Settings → Secrets and variables → Actions → Variables).
+          # Vides tant que Supabase n'est pas configuré → l'outil IK reste en mode local.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
