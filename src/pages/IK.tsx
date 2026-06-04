@@ -99,7 +99,19 @@ const IKPage = () => {
         if (!session) return; // pas encore connecté
         setLoadingData(true);
         try {
-          // Migration automatique des données locales au premier passage
+          // Recharger le profil d'abord : il change quand on change de compte,
+          // et il décide de tout (un admin n'a AUCUNE donnée personnelle)
+          const p = await fetchProfile();
+          if (p?.isAdmin) {
+            if (cancelled) return;
+            setProfile(p);
+            setSettings(null);
+            setMonths(emptyMonths());
+            setFallbackSettings(null);
+            return;
+          }
+
+          // Salarié : migration automatique des données locales au premier passage
           const localSettings = loadSettings(year);
           const localMonths = loadYearMonths(year);
           const hasLocal =
@@ -114,11 +126,7 @@ const IKPage = () => {
             }
             migrated = true;
           }
-          const [s, m, p] = await Promise.all([
-            fetchSettings(year),
-            fetchMonths(year),
-            profile ? Promise.resolve(profile) : fetchProfile(),
-          ]);
+          const [s, m] = await Promise.all([fetchSettings(year), fetchMonths(year)]);
           const fb = s ? null : await fetchSettings(year - 1).catch(() => null);
           if (cancelled) return;
           setSettings(s);
@@ -139,7 +147,6 @@ const IKPage = () => {
     };
     load();
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [year, session]);
 
   const summary = useMemo(
@@ -369,6 +376,10 @@ const IKPage = () => {
             </p>
           ) : (
             <>
+              {/* Admin = vue patron uniquement : aucune saisie personnelle */}
+              {profile?.isAdmin ? (
+                <AdminPanel year={year} />
+              ) : (<>
               <SettingsCard
                 key={`${year}-${settings ? "ok" : "new"}`}
                 year={year}
@@ -441,8 +452,7 @@ const IKPage = () => {
                   />
                 </>
               )}
-
-              {profile?.isAdmin && <AdminPanel year={year} />}
+              </>)}
             </>
           )}
         </div>

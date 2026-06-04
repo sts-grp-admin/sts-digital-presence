@@ -34,6 +34,14 @@ const sb = () => {
   return supabase;
 };
 
+/** Id de l'utilisateur courant. Indispensable dans les requêtes « mes données » :
+ *  le RLS laisse l'admin voir TOUTES les lignes, il faut donc toujours filtrer. */
+const uid = async (): Promise<string> => {
+  const { data } = await sb().auth.getUser();
+  if (!data.user) throw new Error("Session expirée");
+  return data.user.id;
+};
+
 const toSettings = (r: SettingsRow): YearSettings => ({
   name: r.name,
   cv: r.cv as Cv,
@@ -59,6 +67,7 @@ export async function fetchSettings(year: number): Promise<YearSettings | null> 
   const { data, error } = await sb()
     .from("ik_settings")
     .select("*")
+    .eq("user_id", await uid())
     .eq("year", year)
     .maybeSingle();
   if (error) throw error;
@@ -85,6 +94,7 @@ export async function fetchMonths(year: number): Promise<MonthData[]> {
   const { data, error } = await sb()
     .from("ik_months")
     .select("month, days")
+    .eq("user_id", await uid())
     .eq("year", year);
   if (error) throw error;
   const months: MonthData[] = Array.from({ length: 12 }, () => ({ days: {} }));
@@ -108,15 +118,23 @@ export async function upsertMonth(year: number, month: number, data: MonthData):
 }
 
 export async function deleteMonth(year: number, month: number): Promise<void> {
-  const { error } = await sb().from("ik_months").delete().eq("year", year).eq("month", month);
+  const { error } = await sb()
+    .from("ik_months")
+    .delete()
+    .eq("user_id", await uid())
+    .eq("year", year)
+    .eq("month", month);
   if (error) throw error;
 }
 
 /** Vrai si le compte n'a encore AUCUNE donnée pour cette année (migration locale → cloud). */
 export async function cloudIsEmpty(year: number): Promise<boolean> {
+  const id = await uid();
   const [s, m] = await Promise.all([
-    sb().from("ik_settings").select("year", { count: "exact", head: true }).eq("year", year),
-    sb().from("ik_months").select("year", { count: "exact", head: true }).eq("year", year),
+    sb().from("ik_settings").select("year", { count: "exact", head: true })
+      .eq("user_id", id).eq("year", year),
+    sb().from("ik_months").select("year", { count: "exact", head: true })
+      .eq("user_id", id).eq("year", year),
   ]);
   if (s.error) throw s.error;
   if (m.error) throw m.error;

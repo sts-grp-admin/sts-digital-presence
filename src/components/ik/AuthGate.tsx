@@ -71,7 +71,12 @@ export const CloudLogin = () => {
     setState("sending");
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}/outils/ik` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/outils/ik`,
+        // Verrou « sur invitation » : ne crée JAMAIS de compte — seuls les
+        // emails déjà enregistrés par STS reçoivent un lien.
+        shouldCreateUser: false,
+      },
     });
     setState(error ? "error" : "sent");
   };
