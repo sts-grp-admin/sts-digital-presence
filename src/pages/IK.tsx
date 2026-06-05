@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Session } from "@supabase/supabase-js";
+import { FunctionsHttpError, Session } from "@supabase/supabase-js";
 import { Cloud, Download, Loader2, LogOut, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -407,8 +407,20 @@ const IKPage = () => {
         if (!res.ok) throw new Error();
         toast.success(`Rapport envoyé à ${email()}.`);
       }
-    } catch {
-      toast.error("Échec de l'envoi. Réessayez, ou exportez le xlsx manuellement.");
+    } catch (e) {
+      // Relayer le message structuré du serveur quand il existe — notamment
+      // l'avertissement anti-doublon « l'email a pu partir, vérifiez avant de
+      // réessayer », que le générique « Réessayez » contredirait
+      let message = "Échec de l'envoi. Réessayez, ou exportez le xlsx manuellement.";
+      if (e instanceof FunctionsHttpError) {
+        try {
+          const body = (await e.context.json()) as { error?: string };
+          if (body?.error) message = body.error;
+        } catch {
+          // corps illisible : on garde le message générique
+        }
+      }
+      toast.error(message);
     } finally {
       setSending(false);
     }
