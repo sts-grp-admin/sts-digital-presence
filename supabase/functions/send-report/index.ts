@@ -218,15 +218,26 @@ Deno.serve(async (req) => {
   if (pdfBase64) attachments.push({ filename: pdfName, content: pdfBase64 });
   if (attachments.length > 0) payload.attachments = attachments;
 
-  const sendEmail = (p: Record<string, unknown>) =>
+  const sendEmail = (p: Record<string, unknown>, timeoutMs = 15_000) =>
     fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(p),
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
 
-  const resendRes = await sendEmail(payload);
+  // Premier envoi sous try/catch : un timeout/rejet réseau doit produire un 502
+  // structuré, pas un 500 brut. Après un timeout, Resend a PU accepter l'email :
+  // le message invite à vérifier avant de réessayer (anti-doublon).
+  let resendRes: Response;
+  try {
+    resendRes = await sendEmail(payload, 30_000);
+  } catch (e) {
+    console.error("Resend error (réseau/timeout):", e);
+    return json(502, {
+      error: "Envoi incertain (délai réseau) — vérifiez la boîte du destinataire avant de réessayer, l'email a pu partir.",
+    });
+  }
   if (!resendRes.ok) {
     console.error("Resend error:", await resendRes.text());
     return json(502, { error: "Échec de l'envoi de l'email" });
@@ -235,10 +246,14 @@ Deno.serve(async (req) => {
   // 7. Relais compta : le justificatif PDF part SEUL (sans corps de message,
   //    les outils d'ingestion type Tiime ne lisent que la pièce jointe) vers
   //    l'adresse FIXE du secret IK_RECIPIENT_COMPTA — jamais fournie par le client.
-  //    FRONTIÈRE DE CONFIANCE : le PDF est construit côté client ; il n'est
-  //    relayé en compta QUE si le montant annoncé par le client correspond au
-  //    recalcul serveur — sinon un client altéré déposerait des chiffres
-  //    arbitraires dans la comptabilité.
+  //    FRONTIÈRE DE CONFIANCE : le PDF est construit côté client et son CONTENU
+  //    n'est pas vérifié ici. Le garde `clientAllowance` couvre le cas réaliste
+  //    du client PÉRIMÉ (données modifiées depuis un autre appareil) ; un client
+  //    délibérément altéré pourrait annoncer le bon montant avec un PDF mensonger.
+  //    Risque résiduel ACCEPTÉ (arbitrage revue PR #2) : salariés nominatifs
+  //    approuvés, déclaration art. 441-7 opposable, et l'email patron porte les
+  //    chiffres serveur faisant foi. Si l'exposition augmente un jour, la vraie
+  //    clôture est la génération du PDF côté serveur.
   //    Un échec ici n'annule jamais le rapport déjà livré au patron.
   let compta: ComptaStatus = "non_configure";
   const comptaRecipient = Deno.env.get("IK_RECIPIENT_COMPTA");

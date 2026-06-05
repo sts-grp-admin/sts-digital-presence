@@ -93,9 +93,9 @@ const MonthSummaryCard = ({
                   {summary.trips.length} jours · {fmtKm(summary.monthKm)} · {fmtEur(summary.allowance)}.
                   {cloudMode
                     ? ` Le rapport part à ${recipient} avec le fichier Excel et le justificatif
-                        PDF en pièces jointes ; le justificatif est également transmis à la
-                        comptabilité de STS, et le cumul annuel est revérifié côté serveur
-                        avant calcul.`
+                        PDF en pièces jointes ; si le relais comptable est activé, le justificatif
+                        est également transmis à la comptabilité de STS. Le cumul annuel est
+                        revérifié côté serveur avant calcul.`
                     : ` Le rapport part par email à ${recipient}, avec un lien pour télécharger
                         le fichier Excel.`}
                   {" "}{CERTIFICATION_ENVOI}

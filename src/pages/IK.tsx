@@ -371,14 +371,21 @@ const IKPage = () => {
             ` — ${fmtEur(res.allowance)} (validé serveur).`
           );
         }
-        if ((res.compta === "echec" || res.compta === "ecart_client") && pdf) {
-          // Le PDF déjà généré est téléchargé sur-le-champ : l'instruction
-          // « transférez-le manuellement » devient actionnable
+        if (res.compta === "echec" && pdf) {
+          // Chiffres VALIDÉS mais relais réseau raté : le PDF déjà généré est
+          // téléchargé sur-le-champ — « transférez-le manuellement » devient actionnable
           const bytes = Uint8Array.from(atob(pdf.base64), (c) => c.charCodeAt(0));
           downloadBlob(new Blob([bytes], { type: "application/pdf" }), pdf.filename);
           toast.warning(
             "Le justificatif n'a pas atteint la compta — il vient d'être téléchargé, " +
             "transférez-le manuellement."
+          );
+        } else if (res.compta === "ecart_client") {
+          // Chiffres REFUSÉS par le serveur : surtout NE PAS proposer de déposer
+          // ce PDF manuellement — rechargez, vérifiez, renvoyez
+          toast.warning(
+            "Relais compta refusé : le justificatif n'est plus à jour. " +
+            "Rechargez la page, vérifiez le mois puis renvoyez le rapport."
           );
         } else if (res.compta === undefined && pdf) {
           toast.warning("Statut du relais compta inconnu (fonction serveur à redéployer).");
