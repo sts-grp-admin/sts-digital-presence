@@ -6,11 +6,14 @@
 // avec le xlsx en pièce jointe via Resend.
 //
 // Secrets attendus (supabase secrets set …) :
-//   RESEND_API_KEY  — clé API Resend
-//   IK_RECIPIENT    — destinataire fixe (le patron), JAMAIS paramétrable par le client
-//   IK_FROM         — expéditeur vérifié chez Resend, ex. "STS IK <ik@sabiustechsolutions.com>"
+//   RESEND_API_KEY       — clé API Resend
+//   IK_RECIPIENT         — destinataire fixe (le patron), JAMAIS paramétrable par le client
+//   IK_FROM              — expéditeur vérifié chez Resend, ex. "STS IK <ik@sabiustechsolutions.com>"
+//   IK_RECIPIENT_COMPTA  — (optionnel) ingestion comptable (ex. Tiime) : reçoit le
+//                          justificatif PDF seul, sans corps de message
 
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { DECLARATION_SALARIE, type ComptaStatus } from "../_shared/legal.ts";
 // SOURCE UNIQUE du barème, partagée avec le site (src/lib/ik/bareme.ts la ré-exporte)
 import {
   bracketLabel, CV_LABELS, entitlement, isValidDailyKm, round2, type Cv,
@@ -59,13 +62,14 @@ Deno.serve(async (req) => {
     year?: number; month?: number;
     xlsxBase64?: string; filename?: string;
     pdfBase64?: string; pdfFilename?: string;
+    clientAllowance?: number;
   };
   try {
     body = await req.json();
   } catch {
     return json(400, { error: "JSON invalide" });
   }
-  const { year, month, xlsxBase64, filename, pdfBase64, pdfFilename } = body;
+  const { year, month, xlsxBase64, filename, pdfBase64, pdfFilename, clientAllowance } = body;
   if (
     !Number.isInteger(year) || year! < 2020 || year! > 2100 ||
     !Number.isInteger(month) || month! < 1 || month! > 12
@@ -177,9 +181,7 @@ Deno.serve(async (req) => {
     `INDEMNITÉ DU MOIS À PAYER : ${fmtEur(allowance)}`,
     `Cumul indemnités ${year} : ${fmtEur(cumAllowance)}`,
     ``,
-    `Déclaration transmise par le salarié depuis son espace authentifié (lien email nominatif) — ` +
-    `vaut certification sur l'honneur de l'exactitude des informations déclarées ` +
-    `(article 441-7 du Code pénal porté à sa connaissance lors de l'envoi).`,
+    DECLARATION_SALARIE,
     ``,
     `Récap ${year} (km par mois) :`,
   );
@@ -202,8 +204,9 @@ Deno.serve(async (req) => {
     subject: `[IK] ${monthLabel} — ${s.name} — ${fmtEur(allowance)}`,
     text: lines.join("\n"),
   };
+  // Unicode-aware : conserve toutes les lettres accentuées (Benoît, Müller…)
   const cleanName = (raw: string | undefined, fallback: string) =>
-    raw?.replace(/[^\w.\-éèêàç ]/g, "") || fallback;
+    raw?.replace(/[^\p{L}\p{N}_.\- ]/gu, "") || fallback;
   const attachments: { filename: string; content: string }[] = [];
   if (xlsxBase64) {
     attachments.push({
@@ -220,6 +223,7 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(p),
+      signal: AbortSignal.timeout(15_000),
     });
 
   const resendRes = await sendEmail(payload);
@@ -228,21 +232,44 @@ Deno.serve(async (req) => {
     return json(502, { error: "Échec de l'envoi de l'email" });
   }
 
-  // 7. Relais compta : le justificatif PDF part vers l'ingestion (ex. Tiime).
-  //    Adresse FIXE côté secret (IK_RECIPIENT_COMPTA) — jamais fournie par le client.
-  //    Un échec ici n'annule pas le rapport déjà livré au patron : signalé en réponse.
-  let compta: "envoye" | "echec" | "desactive" = "desactive";
+  // 7. Relais compta : le justificatif PDF part SEUL (sans corps de message,
+  //    les outils d'ingestion type Tiime ne lisent que la pièce jointe) vers
+  //    l'adresse FIXE du secret IK_RECIPIENT_COMPTA — jamais fournie par le client.
+  //    FRONTIÈRE DE CONFIANCE : le PDF est construit côté client ; il n'est
+  //    relayé en compta QUE si le montant annoncé par le client correspond au
+  //    recalcul serveur — sinon un client altéré déposerait des chiffres
+  //    arbitraires dans la comptabilité.
+  //    Un échec ici n'annule jamais le rapport déjà livré au patron.
+  let compta: ComptaStatus = "non_configure";
   const comptaRecipient = Deno.env.get("IK_RECIPIENT_COMPTA");
-  if (comptaRecipient && pdfBase64) {
-    const comptaRes = await sendEmail({
-      from,
-      to: [comptaRecipient],
-      subject: `Justificatif IK ${monthLabel} — ${s.name} — ${fmtEur(allowance)}`,
-      text: `Justificatif d'indemnités kilométriques — ${s.name} — ${monthLabel} — ${fmtEur(allowance)}.`,
-      attachments: [{ filename: pdfName, content: pdfBase64 }],
-    });
-    compta = comptaRes.ok ? "envoye" : "echec";
-    if (!comptaRes.ok) console.error("Resend compta error:", await comptaRes.text());
+  if (comptaRecipient) {
+    if (!pdfBase64) {
+      compta = "sans_pdf";
+      console.warn("Relais compta sauté : aucun PDF reçu (ancienne UI en cache ?)");
+    } else if (
+      !Number.isFinite(clientAllowance) ||
+      Math.abs((clientAllowance as number) - allowance) > 0.005
+    ) {
+      compta = "ecart_client";
+      console.error(
+        `Relais compta REFUSÉ : montant client ${clientAllowance} ≠ serveur ${allowance} (user ${userId})`
+      );
+    } else {
+      try {
+        const comptaRes = await sendEmail({
+          from,
+          to: [comptaRecipient],
+          subject: `Justificatif IK ${monthLabel} — ${s.name} — ${fmtEur(allowance)}`,
+          text: " ", // pièce jointe seule : l'ingestion comptable ne lit pas le corps
+          attachments: [{ filename: pdfName, content: pdfBase64 }],
+        });
+        compta = comptaRes.ok ? "envoye" : "echec";
+        if (!comptaRes.ok) console.error("Resend compta error:", await comptaRes.text());
+      } catch (e) {
+        compta = "echec";
+        console.error("Resend compta error:", e);
+      }
+    }
   }
 
   return json(200, { ok: true, monthKm, cumKm, allowance, bracket: bracketLabel(cumKm), compta });

@@ -27,7 +27,7 @@ import {
   dashboardRows, fmtEur, monthSummary, workweekDays,
 } from "@/lib/ik/compute";
 import { buildMonthXlsxBase64, downloadBlob, exportMonthCsv, exportMonthXlsx } from "@/lib/ik/export";
-import { buildMonthPdfBase64 } from "@/lib/ik/exportPdf";
+import { buildMonthPdfBase64, exportMonthPdf } from "@/lib/ik/exportPdf";
 import {
   buildEmailBody, buildEmailSubject, buildPayload, readReportFromHash,
   ReportPayload, reportUrl,
@@ -342,22 +342,27 @@ const IKPage = () => {
         }
         await upsertMonth(year, month, months[month - 1]);
 
-        const [xlsx, pdf] = await Promise.all([
-          buildMonthXlsxBase64(settings, summary, year, month, dashboard),
-          buildMonthPdfBase64(settings, summary, year, month),
-        ]);
+        // Le PDF est BEST-EFFORT : son échec (chunk jspdf introuvable après un
+        // redéploiement, rendu qui lève…) ne doit jamais bloquer le rapport
+        const xlsx = await buildMonthXlsxBase64(settings, summary, year, month, dashboard);
+        let pdf: { base64: string; filename: string } | null = null;
+        try {
+          pdf = await buildMonthPdfBase64(settings, summary, year, month);
+        } catch {
+          toast.warning("Justificatif PDF non généré — le rapport part avec le xlsx seul.");
+        }
+
         const res = await sendReportCloud(
-          year, month, xlsx.base64, xlsx.filename, pdf.base64, pdf.filename
+          year, month, xlsx.base64, xlsx.filename,
+          pdf?.base64, pdf?.filename, summary.allowance
         );
-        if (Math.abs(res.allowance - summary.allowance) > 0.005) {
+
+        // Deux faits indépendants, deux toasts : écart serveur ET statut compta
+        const mismatch = Math.abs(res.allowance - summary.allowance) > 0.005;
+        if (mismatch) {
           toast.warning(
             `Le serveur a calculé ${fmtEur(res.allowance)} (écran : ${fmtEur(summary.allowance)}). ` +
             "Données modifiées depuis un autre appareil ? Rechargez la page et revérifiez."
-          );
-        } else if (res.compta === "echec") {
-          toast.warning(
-            `Rapport envoyé à ${email()}, mais le relais vers la compta a échoué — ` +
-            "transférez-y le PDF manuellement."
           );
         } else {
           toast.success(
@@ -365,6 +370,18 @@ const IKPage = () => {
             (res.compta === "envoye" ? " + justificatif PDF transmis à la compta" : "") +
             ` — ${fmtEur(res.allowance)} (validé serveur).`
           );
+        }
+        if ((res.compta === "echec" || res.compta === "ecart_client") && pdf) {
+          // Le PDF déjà généré est téléchargé sur-le-champ : l'instruction
+          // « transférez-le manuellement » devient actionnable
+          const bytes = Uint8Array.from(atob(pdf.base64), (c) => c.charCodeAt(0));
+          downloadBlob(new Blob([bytes], { type: "application/pdf" }), pdf.filename);
+          toast.warning(
+            "Le justificatif n'a pas atteint la compta — il vient d'être téléchargé, " +
+            "transférez-le manuellement."
+          );
+        } else if (res.compta === undefined && pdf) {
+          toast.warning("Statut du relais compta inconnu (fonction serveur à redéployer).");
         }
       } else {
         const payload = buildPayload(settings, months[month - 1], year, month, summary.cumKmBefore);
@@ -556,6 +573,11 @@ const IKPage = () => {
                         onSend={handleSend}
                         onExportXlsx={() => exportMonthXlsx(settings, summary, year, month, dashboard)}
                         onExportCsv={() => exportMonthCsv(settings, summary, year, month)}
+                        onExportPdf={() =>
+                          exportMonthPdf(settings, summary, year, month).catch(() =>
+                            toast.error("Génération du PDF impossible.")
+                          )
+                        }
                       />
                       {!cloudEnabled && (
                         <div className="bg-card border border-border rounded-xl p-4">

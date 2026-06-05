@@ -48,6 +48,9 @@ supabase link --project-ref XXXX     # XXXX = ref du projet (Settings → Genera
 supabase secrets set RESEND_API_KEY=re_xxxxxxxx
 supabase secrets set IK_RECIPIENT=contact@sabiustechsolutions.com
 supabase secrets set "IK_FROM=STS IK <ik@sabiustechsolutions.com>"
+# Optionnel mais recommandé : le justificatif PDF part automatiquement
+# vers l'ingestion comptable (Tiime…) à chaque envoi de rapport
+supabase secrets set IK_RECIPIENT_COMPTA=justif+VOTRE-ADRESSE@tiime.fr
 supabase functions deploy send-report
 ```
 

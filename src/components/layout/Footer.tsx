@@ -3,6 +3,7 @@ import logo from "@/assets/sabius_logo.png";
 import { useLanguage, t } from "@/i18n/LanguageContext";
 import { translations } from "@/i18n/translations";
 import { email } from "@/lib/email";
+import { LEGAL_LINE } from "../../../supabase/functions/_shared/legal";
 
 const Footer = () => {
   const { lang } = useLanguage();
@@ -69,7 +70,7 @@ const Footer = () => {
           <Link to="/mentions-legales" className="hover:opacity-100 transition-opacity">{t(f.legalNotice, lang)}</Link>
         </div>
         <p className="mt-4 text-center text-[10px] text-night-foreground/40">
-          SABIUS TECH SOLUTIONS — SARL au capital de 5 000 € — SIREN 918 031 675 — RCS Paris
+          {LEGAL_LINE}
         </p>
       </div>
     </footer>
