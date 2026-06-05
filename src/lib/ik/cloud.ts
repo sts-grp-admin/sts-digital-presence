@@ -117,16 +117,6 @@ export async function upsertMonth(year: number, month: number, data: MonthData):
   if (error) throw error;
 }
 
-export async function deleteMonth(year: number, month: number): Promise<void> {
-  const { error } = await sb()
-    .from("ik_months")
-    .delete()
-    .eq("user_id", await uid())
-    .eq("year", year)
-    .eq("month", month);
-  if (error) throw error;
-}
-
 // --- Vue admin (RLS : seulement si ik_profiles.is_admin) ---
 
 export interface TeamMemberData {

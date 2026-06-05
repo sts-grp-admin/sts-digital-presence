@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   fetchMonths, fetchProfile, fetchSettings, Profile,
-  deleteMonth as deleteMonthCloud, sendReportCloud, upsertMonth, upsertSettings,
+  sendReportCloud, upsertMonth, upsertSettings,
 } from "@/lib/ik/cloud";
 import { clearDirty, listDirty, markDirty } from "@/lib/ik/sync";
 import {
@@ -279,15 +279,10 @@ const IKPage = () => {
     });
 
   const handleClearMonth = () => {
-    setMonths((prev) => {
-      const next = [...prev];
-      next[month - 1] = { days: {} };
-      return next;
-    });
-    clearMonth(year, month);
-    if (cloudReady) {
-      deleteMonthCloud(year, month).catch(() => toast.error("Suppression cloud échouée."));
-    }
+    // Même chemin que les saisies : le vidage écrase l'éventuel upsert débouncé
+    // en vol et survit au hors-ligne via la file dirty — un mois vidé ne peut
+    // plus « ressusciter » (revue PR #1, 3e passe)
+    updateMonth(() => ({ days: {} }));
     toast.success("Mois vidé. Les autres mois sont intacts.");
   };
 
