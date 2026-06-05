@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarCheck, ChevronLeft, ChevronRight, Pencil, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -210,25 +211,25 @@ const CalendarGrid = ({
                           <Label htmlFor={`ovr-km-${day}`} className="text-xs text-muted-foreground">
                             Distance (km)
                           </Label>
-                          <input
+                          <Input
                             id={`ovr-km-${day}`}
                             inputMode="decimal"
                             placeholder={String(settings.distanceKm)}
                             value={entry.km !== undefined ? String(entry.km) : ""}
                             onChange={(e) => onOverride(day, "km", e.target.value)}
-                            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="mt-1 h-9"
                           />
                         </div>
                         <div>
                           <Label htmlFor={`ovr-dest-${day}`} className="text-xs text-muted-foreground">
                             Destination / client
                           </Label>
-                          <input
+                          <Input
                             id={`ovr-dest-${day}`}
                             placeholder={settings.destination}
                             value={entry.dest ?? ""}
                             onChange={(e) => onOverride(day, "dest", e.target.value)}
-                            className="mt-1 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                            className="mt-1 h-9"
                           />
                         </div>
                         {overridden && (

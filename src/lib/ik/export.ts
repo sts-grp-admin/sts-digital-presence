@@ -10,7 +10,7 @@ const EUR_FMT = '#,##0.00 "€"';
 const HEADER_FILL = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE8EEF4" } } as const;
 const TITLE_FILL = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1B3A5C" } } as const;
 
-function downloadBlob(blob: Blob, filename: string): void {
+export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;

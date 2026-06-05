@@ -26,7 +26,7 @@ import { clearDirty, listDirty, markDirty } from "@/lib/ik/sync";
 import {
   dashboardRows, fmtEur, monthSummary, workweekDays,
 } from "@/lib/ik/compute";
-import { buildMonthXlsxBase64, exportMonthCsv, exportMonthXlsx } from "@/lib/ik/export";
+import { buildMonthXlsxBase64, downloadBlob, exportMonthCsv, exportMonthXlsx } from "@/lib/ik/export";
 import {
   buildEmailBody, buildEmailSubject, buildPayload, readReportFromHash,
   ReportPayload, reportUrl,
@@ -119,40 +119,40 @@ const IKPage = () => {
         if (!session) return; // pas encore connecté
         setLoadingData(true);
         try {
-          // Recharger le profil d'abord : il change quand on change de compte,
-          // et il décide de tout (un admin n'a AUCUNE donnée personnelle)
-          const p = await fetchProfile();
+          // Re-pousser d'abord les saisies non synchronisées (hors-ligne, onglet
+          // fermé en plein envoi…) — rien ne doit être écrasé par le cloud.
+          // (Vide pour un admin : il ne persiste jamais rien.)
+          const userId = session.user.id;
+          const dirtyResults = await Promise.allSettled(
+            listDirty(userId, year).map(async (dirty) => {
+              await upsertMonth(year, dirty.month, dirty.data);
+              clearDirty(userId, year, dirty.month);
+            })
+          );
+          const pendingSync = dirtyResults.filter((r) => r.status === "rejected").length;
+          if (pendingSync > 0) {
+            toast.warning(`${pendingSync} mois en attente de synchronisation — vérifiez votre connexion.`);
+          }
+
+          // Un seul aller-retour de latence : tout part en parallèle, et les
+          // données personnelles sont simplement ignorées si le compte est admin
+          const [p, s, m, fb] = await Promise.all([
+            fetchProfile(),
+            fetchSettings(year),
+            fetchMonths(year),
+            fetchSettings(year - 1).catch(() => null),
+          ]);
+          if (cancelled) return;
           if (p?.isAdmin) {
-            if (cancelled) return;
             setProfile(p);
             setSettings(null);
             setMonths(emptyMonths());
             setFallbackSettings(null);
             return;
           }
-
-          // Salarié : re-pousser d'abord les saisies non synchronisées (hors-ligne,
-          // onglet fermé en plein envoi…) — rien ne doit être écrasé par le cloud
-          const userId = session.user.id;
-          let pendingSync = 0;
-          for (const dirty of listDirty(userId, year)) {
-            try {
-              await upsertMonth(year, dirty.month, dirty.data);
-              clearDirty(userId, year, dirty.month);
-            } catch {
-              pendingSync++;
-            }
-          }
-          if (pendingSync > 0) {
-            toast.warning(`${pendingSync} mois en attente de synchronisation — vérifiez votre connexion.`);
-          }
-
-          const [s, m] = await Promise.all([fetchSettings(year), fetchMonths(year)]);
-          const fb = s ? null : await fetchSettings(year - 1).catch(() => null);
-          if (cancelled) return;
           setSettings(s);
           setMonths(m);
-          setFallbackSettings(fb);
+          setFallbackSettings(s ? null : fb);
           setProfile(p);
 
           // Données locales du mode PIN : PROPOSER l'import (jamais automatique —
@@ -203,18 +203,27 @@ const IKPage = () => {
   // ── Persistance (auto-save) ──
   // Cloud : marqué « dirty » (clé rattachée à l'utilisateur) AVANT l'upsert,
   // démarqué seulement au succès → une saisie hors-ligne est re-poussée au
-  // prochain chargement au lieu d'être perdue. Aucune écriture dans les clés
-  // locales non rattachées (réservées au mode PIN) : pas de fuite entre comptes.
+  // prochain chargement au lieu d'être perdue. L'upsert réseau est DÉBOUNCÉ
+  // (600 ms) : taper « Marseille » ne déclenche plus 9 requêtes — et si
+  // l'onglet ferme avant l'envoi, le marquage dirty garantit la reprise.
+  const upsertTimers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const persistMonth = useCallback(
     (m: number, data: MonthData) => {
       if (cloudReady && session) {
         const userId = session.user.id;
         markDirty(userId, year, m, data);
-        upsertMonth(year, m, data)
-          .then(() => clearDirty(userId, year, m))
-          .catch(() =>
-            toast.error("Hors-ligne ? Saisie conservée — elle sera synchronisée au prochain chargement.")
-          );
+        const timerKey = `${year}-${m}`;
+        clearTimeout(upsertTimers.current.get(timerKey));
+        upsertTimers.current.set(
+          timerKey,
+          setTimeout(() => {
+            upsertMonth(year, m, data)
+              .then(() => clearDirty(userId, year, m))
+              .catch(() =>
+                toast.error("Hors-ligne ? Saisie conservée — elle sera synchronisée au prochain chargement.")
+              );
+          }, 600)
+        );
       } else {
         saveMonth(year, m, data);
       }
@@ -222,17 +231,19 @@ const IKPage = () => {
     [year, cloudReady, session]
   );
 
+  // Updater PUR (exigence React : il peut être ré-exécuté) — les effets de
+  // bord (persistance) sortent du setState
   const updateMonth = useCallback(
     (updater: (data: MonthData) => MonthData) => {
+      const updated = updater(months[month - 1]);
       setMonths((prev) => {
         const next = [...prev];
-        const updated = updater(next[month - 1]);
         next[month - 1] = updated;
-        persistMonth(month, updated);
         return next;
       });
+      persistMonth(month, updated);
     },
-    [month, persistMonth]
+    [months, month, persistMonth]
   );
 
   const toggleDay = (day: number) =>
@@ -296,8 +307,10 @@ const IKPage = () => {
     const candidate = importCandidate;
     setImportCandidate(null);
     try {
-      if (candidate.settings) await upsertSettings(year, candidate.settings);
-      for (const gap of candidate.months) await upsertMonth(year, gap.month, gap.data);
+      await Promise.all([
+        ...(candidate.settings ? [upsertSettings(year, candidate.settings)] : []),
+        ...candidate.months.map((gap) => upsertMonth(year, gap.month, gap.data)),
+      ]);
       // Purge des données locales importées : elles ne seront plus proposées
       // (ni à ce compte, ni à un autre sur ce poste partagé)
       for (const gap of candidate.months) clearMonth(year, gap.month);
@@ -370,15 +383,11 @@ const IKPage = () => {
   };
 
   // ── Sauvegarde locale (mode local uniquement) ──
-  const downloadBackup = () => {
-    const blob = new Blob([exportBackup()], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `sauvegarde-ik-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const downloadBackup = () =>
+    downloadBlob(
+      new Blob([exportBackup()], { type: "application/json" }),
+      `sauvegarde-ik-${new Date().toISOString().slice(0, 10)}.json`
+    );
 
   const handleImportBackup = (file: File) => {
     const reader = new FileReader();

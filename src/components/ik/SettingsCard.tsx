@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Car, Pencil, Save, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -18,9 +19,6 @@ interface Props {
   fallback?: YearSettings | null;
   onSave: (settings: YearSettings) => void;
 }
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
 const toForm = (s: YearSettings | null | undefined) => ({
   name: s?.name ?? "",
@@ -100,7 +98,7 @@ const SettingsCard = ({ year, settings, fallback, onSave }: Props) => {
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <Label className="block text-sm font-medium mb-2" htmlFor="ik-name">Nom & prénom</Label>
-          <input id="ik-name" className={inputClass} value={form.name}
+          <Input id="ik-name" value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Jean Dupont" />
         </div>
         <div>
@@ -116,19 +114,19 @@ const SettingsCard = ({ year, settings, fallback, onSave }: Props) => {
         </div>
         <div>
           <Label className="block text-sm font-medium mb-2" htmlFor="ik-depart">Départ habituel</Label>
-          <input id="ik-depart" className={inputClass} value={form.depart}
+          <Input id="ik-depart" value={form.depart}
             onChange={(e) => setForm({ ...form, depart: e.target.value })}
             placeholder="Adresse de départ" />
         </div>
         <div>
           <Label className="block text-sm font-medium mb-2" htmlFor="ik-dest">Destination habituelle (client)</Label>
-          <input id="ik-dest" className={inputClass} value={form.destination}
+          <Input id="ik-dest" value={form.destination}
             onChange={(e) => setForm({ ...form, destination: e.target.value })}
             placeholder="Adresse du client" />
         </div>
         <div>
           <Label className="block text-sm font-medium mb-2" htmlFor="ik-km">Distance par jour travaillé (km)</Label>
-          <input id="ik-km" className={inputClass} inputMode="decimal" value={form.distanceKm}
+          <Input id="ik-km" inputMode="decimal" value={form.distanceKm}
             onChange={(e) => setForm({ ...form, distanceKm: e.target.value })} placeholder="86" />
         </div>
         <div className="flex items-end justify-between gap-4 pb-1">

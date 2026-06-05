@@ -8,7 +8,11 @@ import { supabase } from "@/lib/ik/supabase";
 // Pour le changer : console navigateur →
 //   crypto.subtle.digest("SHA-256", new TextEncoder().encode("NOUVEAU_CODE"))
 //     .then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("")))
-const IK_PIN_SHA256 = "24f5f99be6b3c881c2d711db6052664f6cc57331bea0e004936207f8d5b44a01";
+// Surchageable au build (variable de repo VITE_IK_PIN_SHA256) pour sortir le
+// hash de l'historique git public — un PIN court se brute-force de toute façon.
+const IK_PIN_SHA256 =
+  (import.meta.env.VITE_IK_PIN_SHA256 as string | undefined) ??
+  "24f5f99be6b3c881c2d711db6052664f6cc57331bea0e004936207f8d5b44a01";
 export const UNLOCK_KEY = "ik:v1:unlocked";
 
 async function sha256Hex(text: string): Promise<string> {
