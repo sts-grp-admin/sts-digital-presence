@@ -55,20 +55,27 @@ Deno.serve(async (req) => {
   const userId = userData.user.id;
 
   // 2. Entrée
-  let body: { year?: number; month?: number; xlsxBase64?: string; filename?: string };
+  let body: {
+    year?: number; month?: number;
+    xlsxBase64?: string; filename?: string;
+    pdfBase64?: string; pdfFilename?: string;
+  };
   try {
     body = await req.json();
   } catch {
     return json(400, { error: "JSON invalide" });
   }
-  const { year, month, xlsxBase64, filename } = body;
+  const { year, month, xlsxBase64, filename, pdfBase64, pdfFilename } = body;
   if (
     !Number.isInteger(year) || year! < 2020 || year! > 2100 ||
     !Number.isInteger(month) || month! < 1 || month! > 12
   ) {
     return json(400, { error: "Année/mois invalides" });
   }
-  if (xlsxBase64 && xlsxBase64.length > MAX_ATTACHMENT_BASE64) {
+  if (
+    (xlsxBase64 && xlsxBase64.length > MAX_ATTACHMENT_BASE64) ||
+    (pdfBase64 && pdfBase64.length > MAX_ATTACHMENT_BASE64)
+  ) {
     return json(413, { error: "Pièce jointe trop volumineuse" });
   }
 
@@ -170,6 +177,10 @@ Deno.serve(async (req) => {
     `INDEMNITÉ DU MOIS À PAYER : ${fmtEur(allowance)}`,
     `Cumul indemnités ${year} : ${fmtEur(cumAllowance)}`,
     ``,
+    `Déclaration transmise par le salarié depuis son espace authentifié (lien email nominatif) — ` +
+    `vaut certification sur l'honneur de l'exactitude des informations déclarées ` +
+    `(article 441-7 du Code pénal porté à sa connaissance lors de l'envoi).`,
+    ``,
     `Récap ${year} (km par mois) :`,
   );
   let cum = 0;
@@ -191,23 +202,48 @@ Deno.serve(async (req) => {
     subject: `[IK] ${monthLabel} — ${s.name} — ${fmtEur(allowance)}`,
     text: lines.join("\n"),
   };
+  const cleanName = (raw: string | undefined, fallback: string) =>
+    raw?.replace(/[^\w.\-éèêàç ]/g, "") || fallback;
+  const attachments: { filename: string; content: string }[] = [];
   if (xlsxBase64) {
-    payload.attachments = [{
-      filename: filename?.replace(/[^\w.\-éèêàç ]/g, "") || `IK-${pad2(month!)}-${year}.xlsx`,
+    attachments.push({
+      filename: cleanName(filename, `IK-${pad2(month!)}-${year}.xlsx`),
       content: xlsxBase64,
-    }];
+    });
   }
+  const pdfName = cleanName(pdfFilename, `IK-${pad2(month!)}-${year}.pdf`);
+  if (pdfBase64) attachments.push({ filename: pdfName, content: pdfBase64 });
+  if (attachments.length > 0) payload.attachments = attachments;
 
-  const resendRes = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  const sendEmail = (p: Record<string, unknown>) =>
+    fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify(p),
+    });
+
+  const resendRes = await sendEmail(payload);
   if (!resendRes.ok) {
-    const detail = await resendRes.text();
-    console.error("Resend error:", detail);
+    console.error("Resend error:", await resendRes.text());
     return json(502, { error: "Échec de l'envoi de l'email" });
   }
 
-  return json(200, { ok: true, monthKm, cumKm, allowance, bracket: bracketLabel(cumKm) });
+  // 7. Relais compta : le justificatif PDF part vers l'ingestion (ex. Tiime).
+  //    Adresse FIXE côté secret (IK_RECIPIENT_COMPTA) — jamais fournie par le client.
+  //    Un échec ici n'annule pas le rapport déjà livré au patron : signalé en réponse.
+  let compta: "envoye" | "echec" | "desactive" = "desactive";
+  const comptaRecipient = Deno.env.get("IK_RECIPIENT_COMPTA");
+  if (comptaRecipient && pdfBase64) {
+    const comptaRes = await sendEmail({
+      from,
+      to: [comptaRecipient],
+      subject: `Justificatif IK ${monthLabel} — ${s.name} — ${fmtEur(allowance)}`,
+      text: `Justificatif d'indemnités kilométriques — ${s.name} — ${monthLabel} — ${fmtEur(allowance)}.`,
+      attachments: [{ filename: pdfName, content: pdfBase64 }],
+    });
+    compta = comptaRes.ok ? "envoye" : "echec";
+    if (!comptaRes.ok) console.error("Resend compta error:", await comptaRes.text());
+  }
+
+  return json(200, { ok: true, monthKm, cumKm, allowance, bracket: bracketLabel(cumKm), compta });
 });

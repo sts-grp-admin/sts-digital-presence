@@ -27,6 +27,7 @@ import {
   dashboardRows, fmtEur, monthSummary, workweekDays,
 } from "@/lib/ik/compute";
 import { buildMonthXlsxBase64, downloadBlob, exportMonthCsv, exportMonthXlsx } from "@/lib/ik/export";
+import { buildMonthPdfBase64 } from "@/lib/ik/exportPdf";
 import {
   buildEmailBody, buildEmailSubject, buildPayload, readReportFromHash,
   ReportPayload, reportUrl,
@@ -341,17 +342,29 @@ const IKPage = () => {
         }
         await upsertMonth(year, month, months[month - 1]);
 
-        const { base64, filename } = await buildMonthXlsxBase64(
-          settings, summary, year, month, dashboard
+        const [xlsx, pdf] = await Promise.all([
+          buildMonthXlsxBase64(settings, summary, year, month, dashboard),
+          buildMonthPdfBase64(settings, summary, year, month),
+        ]);
+        const res = await sendReportCloud(
+          year, month, xlsx.base64, xlsx.filename, pdf.base64, pdf.filename
         );
-        const res = await sendReportCloud(year, month, base64, filename);
         if (Math.abs(res.allowance - summary.allowance) > 0.005) {
           toast.warning(
             `Le serveur a calculé ${fmtEur(res.allowance)} (écran : ${fmtEur(summary.allowance)}). ` +
             "Données modifiées depuis un autre appareil ? Rechargez la page et revérifiez."
           );
+        } else if (res.compta === "echec") {
+          toast.warning(
+            `Rapport envoyé à ${email()}, mais le relais vers la compta a échoué — ` +
+            "transférez-y le PDF manuellement."
+          );
         } else {
-          toast.success(`Rapport envoyé à ${email()} — ${fmtEur(res.allowance)} (validé serveur).`);
+          toast.success(
+            `Rapport envoyé à ${email()}` +
+            (res.compta === "envoye" ? " + justificatif PDF transmis à la compta" : "") +
+            ` — ${fmtEur(res.allowance)} (validé serveur).`
+          );
         }
       } else {
         const payload = buildPayload(settings, months[month - 1], year, month, summary.cumKmBefore);

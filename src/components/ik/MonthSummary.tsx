@@ -94,6 +94,8 @@ const MonthSummaryCard = ({
                         le cumul annuel est revérifié côté serveur avant calcul.`
                     : ` Le rapport part par email à ${recipient}, avec un lien pour télécharger
                         le fichier Excel.`}
+                  {" "}En envoyant, vous certifiez sur l'honneur l'exactitude des informations
+                  déclarées (article 441-7 du Code pénal).
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

@@ -173,16 +173,19 @@ export async function fetchTeam(year: number): Promise<TeamMemberData[]> {
     .sort((a, b) => label(a).localeCompare(label(b)));
 }
 
-/** Envoi du rapport via l'Edge Function (cumul recalculé côté serveur, xlsx en pièce jointe). */
+/** Envoi du rapport via l'Edge Function : cumul recalculé côté serveur,
+ *  xlsx + PDF joints à contact@, PDF relayé vers l'ingestion compta (Tiime). */
 export async function sendReportCloud(
   year: number,
   month: number,
   xlsxBase64: string,
-  filename: string
-): Promise<{ allowance: number }> {
+  filename: string,
+  pdfBase64?: string,
+  pdfFilename?: string
+): Promise<{ allowance: number; compta: "envoye" | "echec" | "desactive" }> {
   const { data, error } = await sb().functions.invoke("send-report", {
-    body: { year, month, xlsxBase64, filename },
+    body: { year, month, xlsxBase64, filename, pdfBase64, pdfFilename },
   });
   if (error) throw error;
-  return data as { allowance: number };
+  return data as { allowance: number; compta: "envoye" | "echec" | "desactive" };
 }
