@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Users, Zap } from "lucide-react";
+import { ChevronDown, FileDown, Users, Zap } from "lucide-react";
+import { toast } from "sonner";
 import { fetchTeam, TeamMemberData } from "@/lib/ik/cloud";
 import { CV_LABELS } from "@/lib/ik/bareme";
-import { DashboardRow, dashboardRows, fmtEur, fmtKm, MONTH_NAMES } from "@/lib/ik/compute";
+import {
+  DashboardRow, dashboardRows, fmtEur, fmtKm, MONTH_NAMES, monthSummary,
+} from "@/lib/ik/compute";
+import { exportMonthPdf } from "@/lib/ik/exportPdf";
 import { YearSettings } from "@/lib/ik/storage";
 
 /** Réglages de secours quand la ligne manque : seuls les km explicitement
@@ -30,9 +34,10 @@ interface MemberRowProps {
   rows: DashboardRow[];
   globalMaxKm: number;
   index: number;
+  year: number;
 }
 
-const MemberRow = ({ member, rows, globalMaxKm, index }: MemberRowProps) => {
+const MemberRow = ({ member, rows, globalMaxKm, index, year }: MemberRowProps) => {
   const [open, setOpen] = useState(false);
   const total = rows[11];
   const activeRows = rows.filter((r) => r.days > 0);
@@ -124,6 +129,7 @@ const MemberRow = ({ member, rows, globalMaxKm, index }: MemberRowProps) => {
                       <th className="text-right font-medium px-3 py-2">Cumul km</th>
                       <th className="text-right font-medium px-3 py-2">Indemnité</th>
                       <th className="text-right font-medium px-3 py-2">Cumul €</th>
+                      <th className="text-right font-medium px-3 py-2" aria-label="Justificatif PDF" />
                     </tr>
                   </thead>
                   <tbody>
@@ -144,6 +150,26 @@ const MemberRow = ({ member, rows, globalMaxKm, index }: MemberRowProps) => {
                           <td className="px-3 py-1.5 text-right tabular-nums">{r.cumKm ? fmtKm(r.cumKm) : "·"}</td>
                           <td className="px-3 py-1.5 text-right tabular-nums font-medium">{r.allowance ? fmtEur(r.allowance) : "·"}</td>
                           <td className="px-3 py-1.5 text-right tabular-nums">{r.cumAllowance ? fmtEur(r.cumAllowance) : "·"}</td>
+                          <td className="px-3 py-1.5 text-right">
+                            {r.days > 0 && member.settings && (
+                              <button
+                                type="button"
+                                aria-label={`Justificatif PDF ${r.label}`}
+                                title={`Télécharger le justificatif PDF — ${r.label}`}
+                                className="text-muted-foreground hover:text-primary transition-colors"
+                                onClick={() =>
+                                  exportMonthPdf(
+                                    member.settings!,
+                                    monthSummary(member.settings!, member.months, year, r.month),
+                                    year,
+                                    r.month
+                                  ).catch(() => toast.error("Génération du PDF impossible."))
+                                }
+                              >
+                                <FileDown className="h-3.5 w-3.5" />
+                              </button>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
@@ -252,6 +278,7 @@ const AdminPanel = ({ year }: { year: number }) => {
               rows={teamRows[i]}
               globalMaxKm={globalMaxKm}
               index={i}
+              year={year}
             />
           ))}
         </div>

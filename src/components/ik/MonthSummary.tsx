@@ -1,5 +1,6 @@
-import { Download, FileSpreadsheet, Loader2, Send } from "lucide-react";
+import { Download, FileDown, FileSpreadsheet, Loader2, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import { CERTIFICATION_ENVOI } from "../../../supabase/functions/_shared/legal";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -18,6 +19,7 @@ interface Props {
   onSend: () => void;
   onExportXlsx: () => void;
   onExportCsv: () => void;
+  onExportPdf: () => void;
 }
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
@@ -30,7 +32,7 @@ const Stat = ({ label, value }: { label: string; value: string }) => (
 /** Bandeau « ligne de paie » du mois, sur fond night. */
 const MonthSummaryCard = ({
   year, month, summary, sending, recipient, cloudMode,
-  onSend, onExportXlsx, onExportCsv,
+  onSend, onExportXlsx, onExportCsv, onExportPdf,
 }: Props) => {
   const hasTrips = summary.trips.length > 0;
 
@@ -90,10 +92,13 @@ const MonthSummaryCard = ({
                 <AlertDialogDescription>
                   {summary.trips.length} jours · {fmtKm(summary.monthKm)} · {fmtEur(summary.allowance)}.
                   {cloudMode
-                    ? ` Le rapport part à ${recipient} avec le fichier Excel en pièce jointe ;
-                        le cumul annuel est revérifié côté serveur avant calcul.`
+                    ? ` Le rapport part à ${recipient} avec le fichier Excel et le justificatif
+                        PDF en pièces jointes ; si le relais comptable est activé, le justificatif
+                        est également transmis à la comptabilité de STS. Le cumul annuel est
+                        revérifié côté serveur avant calcul.`
                     : ` Le rapport part par email à ${recipient}, avec un lien pour télécharger
                         le fichier Excel.`}
+                  {" "}{CERTIFICATION_ENVOI}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -115,6 +120,12 @@ const MonthSummaryCard = ({
               disabled={!hasTrips} onClick={onExportCsv}
             >
               <Download className="mr-2 h-4 w-4" /> CSV
+            </Button>
+            <Button
+              variant="outline" className="flex-1 border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              disabled={!hasTrips} onClick={onExportPdf}
+            >
+              <FileDown className="mr-2 h-4 w-4" /> PDF
             </Button>
           </div>
         </div>
